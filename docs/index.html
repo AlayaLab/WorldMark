@@ -99,6 +99,16 @@
     figcaption { font-size: 13.5px; color: var(--ink-faint); margin-top: 10px; text-align: center; line-height: 1.55; max-width: 720px; margin-left: auto; margin-right: auto; }
     .figframe { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #fff; max-width: 50%; margin: 0 auto; }
     @media (max-width: 860px) { .figframe { max-width: 100%; } }
+    .intro-row { display: flex; gap: 30px; align-items: center; margin: 4px 0 8px; }
+    .intro-fig { flex: 0 0 44%; }
+    .intro-fig img {
+      width: 100%; border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 12px; background: #fff; box-sizing: border-box;
+    }
+    .intro-text { flex: 1; min-width: 0; }
+    .intro-text p:first-child { margin-top: 0; }
+    @media (max-width: 860px) { .intro-row { flex-direction: column; } .intro-fig { flex: 1 1 auto; width: 100%; } }
+
     .fig-row { display: flex; gap: 18px; align-items: flex-start; margin: 26px 0 8px; }
     .fig-row figure { flex: 1; margin: 0; min-width: 0; }
     .fig-row .figframe { max-width: 100%; }
@@ -374,25 +384,23 @@
 
   <!-- ── Teaser ── -->
   <section class="wrap" id="overview" style="padding-top: 28px;">
-    <p class="kicker">What is WorldMark?</p>
-    <h2>The user acts, and the world responds</h2>
-    <p>
-      An interactive world model is not a video generator: it is an environment. You press a key, and the world
-      is supposed to move that way, keep moving while you hold it, stop when you let go, and still be there when
-      you turn back. <span class="wm">WorldMark</span> is a benchmark that measures exactly that.
-    </p>
-    <p>
-      It drives <strong>ten heterogeneous models</strong>&mdash;caption-, pose-, keyboard-, and trajectory-controlled&mdash;from
-      <strong>one shared WASD-style action vocabulary</strong> over <strong>500 standardized cases</strong>, and scores the
-      result with <strong>nine deterministic metrics</strong> covering action dynamics, world memory, and visual quality.
-    </p>
-    <figure>
-      <div class="figframe"><img src="static/images/teaser.png" alt="WorldMark overview: per-model adapters translate one shared action vocabulary into each model's native control format; a round-trip probe compares outbound and return views at equal accumulated motion."></div>
-      <figcaption>
-        Models take actions in incompatible formats&mdash;keyboard actions, text prompts, camera trajectories&mdash;so per-model adapters translate one shared vocabulary into each native format.
-        For a frame on the outbound leg and its return-leg counterpart at equal accumulated motion, the two views should match but diverge to different degrees.
-      </figcaption>
-    </figure>
+    <div class="intro-row">
+      <div class="intro-fig">
+        <img src="static/images/teaser.png" alt="WorldMark overview: per-model adapters translate one shared action vocabulary into each model's native control format; a round-trip probe compares outbound and return views at equal accumulated motion.">
+      </div>
+      <div class="intro-text">
+        <p>
+          An interactive world model is not a video generator: it is an environment. You press a key, and the world
+          is supposed to move that way, keep moving while you hold it, stop when you let go, and still be there when
+          you turn back. <span class="wm">WorldMark</span> is a benchmark that measures exactly that.
+        </p>
+        <p>
+          It drives <strong>ten heterogeneous models</strong>&mdash;caption-, pose-, keyboard-, and trajectory-controlled&mdash;from
+          <strong>one shared WASD-style action vocabulary</strong> over <strong>500 standardized cases</strong>, and scores the
+          result with <strong>nine deterministic metrics</strong> covering action dynamics, world memory, and visual quality.
+        </p>
+      </div>
+    </div>
 
     <p class="blist-head">Two obstacles to fair evaluation</p>
     <ul class="blist bad">
