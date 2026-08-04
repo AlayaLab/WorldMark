@@ -313,7 +313,8 @@
     <div class="topbar-inner">
       <a class="brand" href="#top"><img src="static/images/favicon.png" alt="">WorldMark</a>
       <div class="topnav">
-        <a href="#comparison">Why WorldMark</a>
+        <a href="#overview">What is WorldMark</a>
+        <a href="#examples">Examples</a>
         <a href="#suite">Benchmark</a>
         <a href="#metrics">Metrics</a>
         <a href="#results">Results</a>
@@ -373,6 +374,18 @@
 
   <!-- ── Teaser ── -->
   <section class="wrap" id="overview" style="padding-top: 28px;">
+    <p class="kicker">What is WorldMark?</p>
+    <h2>The user acts, and the world responds</h2>
+    <p>
+      An interactive world model is not a video generator: it is an environment. You press a key, and the world
+      is supposed to move that way, keep moving while you hold it, stop when you let go, and still be there when
+      you turn back. <span class="wm">WorldMark</span> is a benchmark that measures exactly that.
+    </p>
+    <p>
+      It drives <strong>ten heterogeneous models</strong>&mdash;caption-, pose-, keyboard-, and trajectory-controlled&mdash;from
+      <strong>one shared WASD-style action vocabulary</strong> over <strong>500 standardized cases</strong>, and scores the
+      result with <strong>nine deterministic metrics</strong> covering action dynamics, world memory, and visual quality.
+    </p>
     <figure>
       <div class="figframe"><img src="static/images/teaser.png" alt="WorldMark overview: per-model adapters translate one shared action vocabulary into each model's native control format; a round-trip probe compares outbound and return views at equal accumulated motion."></div>
       <figcaption>
@@ -380,17 +393,23 @@
         For a frame on the outbound leg and its return-leg counterpart at equal accumulated motion, the two views should match but diverge to different degrees.
       </figcaption>
     </figure>
+
+    <p class="blist-head">Two obstacles to fair evaluation</p>
+    <ul class="blist bad">
+      <li><b>Incompatible action formats.</b> Captions, trajectories, pose strings, action functions&mdash;no shared protocol, so no two models get identical instructions.</li>
+      <li><b>Action following collapsed into one number.</b> Trajectory or direction error shows neither how fast the world reacts to a command switch, nor how cleanly it moves along the commanded axis.</li>
+    </ul>
+
+    <p class="blist-head">Our contributions</p>
+    <ul class="blist good">
+      <li><b>A unified action interface</b> that drives ten models with incompatible control formats from a single action vocabulary, together with a standardized suite of 500 cases spanning visual styles, viewpoints, and difficulty tiers; supporting a new model requires one adapter.</li>
+      <li><b>An action-centric metric suite</b> that treats each command as a <em>step input</em>, after control-systems practice, and characterizes <em>how</em> a world responds&mdash;when motion begins, whether it stays on the commanded axis, and whether it holds&mdash;rather than only how far it strays, resolved per motion axis and complemented by memory metrics at three timescales and two visual quality scores.</li>
+      <li><b>A systematic evaluation</b> that turns these measurements into actionable findings: a response&ndash;stability trade-off no single action metric can capture, command axes that fail independently, and a negative correlation between perceptual quality and responsiveness that contradicts appearance-based evaluation.</li>
+    </ul>
   </section>
 
   <!-- ── Qualitative video examples ── -->
   <section class="wrap" id="examples">
-    <p class="kicker">Qualitative Examples</p>
-    <h2>What each metric actually sees</h2>
-    <p class="muted">
-      A high- and a low-scoring model per metric, on the <strong>same scene under the same command</strong>&mdash;the only
-      difference is the model. The on-screen keys show the command being issued.
-    </p>
-
     <h3 class="ex-h">Action Dynamics <span>Does the world go where it is told&mdash;and when?</span></h3>
     <div class="ex-tabs" data-group="action" role="tablist">
       <button class="ex-tab active" data-group="action" data-ex="1">Direction Accuracy</button>
@@ -486,26 +505,6 @@
 
   </section>
 
-  <!-- ── Comparison ── -->
-  <section class="wrap" id="comparison">
-    <p class="kicker">Why WorldMark</p>
-    <h2>The user acts, and the world responds</h2>
-
-    <p class="blist-head">Two obstacles to fair evaluation</p>
-    <ul class="blist bad">
-      <li><b>Incompatible action formats.</b> Captions, trajectories, pose strings, action functions&mdash;no shared protocol, so no two models get identical instructions.</li>
-      <li><b>Action following collapsed into one number.</b> Trajectory or direction error shows neither how fast the world reacts to a command switch, nor how cleanly it moves along the commanded axis.</li>
-    </ul>
-
-    <p class="blist-head">How <span class="wm">WorldMark</span> removes them</p>
-    <ul class="blist good">
-      <li><b>One vocabulary, ten native interfaces.</b> Per-model adapters deliver semantically identical instructions across 500 standardized cases. A new model costs one adapter.</li>
-      <li><b>Action as a step response.</b> Direction accuracy, purity, latency, and stability&mdash;each resolved per motion axis&mdash;plus world memory and visual quality.</li>
-      <li><b>Deterministic by construction.</b> Feed-forward estimators only: bit-identical across runs, no SLAM or sampled-VLM variance.</li>
-      <li><b>Differences one score cannot see.</b> The fastest responders are often the least stable, and the best-looking model is among the least responsive.</li>
-    </ul>
-
-  </section>
 
   <!-- ── Benchmark suite ── -->
   <section class="wrap" id="suite">
@@ -830,11 +829,11 @@
 
   <!-- ── Right side nav ── -->
   <ul class="side-nav">
-    <li><a href="#comparison">Why WorldMark</a></li>
+    <li><a href="#overview">What is WorldMark</a></li>
+    <li><a href="#examples">Examples</a></li>
     <li><a href="#suite">Benchmark Suite</a></li>
     <li><a href="#metrics">Metrics</a></li>
     <li><a href="#results">Results</a></li>
-    <li><a href="#examples">Qualitative Examples</a></li>
     <li><a href="#findings">Key Findings</a></li>
     <li><a href="#arena">Arena</a></li>
     <li><a href="#bibtex">BibTeX</a></li>
