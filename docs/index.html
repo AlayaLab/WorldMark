@@ -296,12 +296,16 @@
     .ex-marks { position: absolute; inset: 0; pointer-events: none; }
     .ex-marks i {
       position: absolute; top: 50%; transform: translate(-50%, -50%);
-      width: 2px; height: 14px; background: var(--ink-faint); border-radius: 1px; opacity: .75;
+      width: 3px; height: 22px; background: #d97706; border-radius: 2px;
+      box-shadow: 0 0 0 2px #fff;
     }
-    .ex-time {
-      flex: 0 0 auto; font-family: var(--mono); font-size: 12px; font-weight: 600;
-      color: var(--ink-faint); min-width: 92px; text-align: right;
+    .ex-marks i::after {
+      content: "switch"; position: absolute; left: 50%; top: 100%;
+      transform: translateX(-50%); margin-top: 3px;
+      font-size: 9.5px; font-weight: 800; letter-spacing: .04em;
+      text-transform: uppercase; color: #d97706; white-space: nowrap;
     }
+    .ex-ctrl { padding-bottom: 12px; }
 
     /* ── Findings ────────────────────────────── */
     .findings { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
@@ -462,7 +466,6 @@
       <div class="ex-ctrl">
         <button class="ex-play" type="button" aria-label="Pause"></button>
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
-        <span class="ex-time">0:00 / 0:00</span>
       </div>
     </div>
     <div class="ex-panel" data-group="action" data-ex="2" data-switches="20">
@@ -476,7 +479,6 @@
       <div class="ex-ctrl">
         <button class="ex-play" type="button" aria-label="Pause"></button>
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
-        <span class="ex-time">0:00 / 0:00</span>
       </div>
     </div>
     <div class="ex-panel" data-group="action" data-ex="3" data-switches="">
@@ -490,7 +492,6 @@
       <div class="ex-ctrl">
         <button class="ex-play" type="button" aria-label="Pause"></button>
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
-        <span class="ex-time">0:00 / 0:00</span>
       </div>
     </div>
     <div class="ex-panel" data-group="action" data-ex="4" data-switches="20">
@@ -504,7 +505,6 @@
       <div class="ex-ctrl">
         <button class="ex-play" type="button" aria-label="Pause"></button>
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
-        <span class="ex-time">0:00 / 0:00</span>
       </div>
     </div>
 
@@ -525,7 +525,6 @@
       <div class="ex-ctrl">
         <button class="ex-play" type="button" aria-label="Pause"></button>
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
-        <span class="ex-time">0:00 / 0:00</span>
       </div>
     </div>
     <div class="ex-panel" data-group="memory" data-ex="6" data-switches="20">
@@ -539,7 +538,6 @@
       <div class="ex-ctrl">
         <button class="ex-play" type="button" aria-label="Pause"></button>
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
-        <span class="ex-time">0:00 / 0:00</span>
       </div>
     </div>
     <div class="ex-panel" data-group="memory" data-ex="7" data-switches="20">
@@ -553,7 +551,6 @@
       <div class="ex-ctrl">
         <button class="ex-play" type="button" aria-label="Pause"></button>
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
-        <span class="ex-time">0:00 / 0:00</span>
       </div>
     </div>
 
@@ -573,7 +570,6 @@
       <div class="ex-ctrl">
         <button class="ex-play" type="button" aria-label="Pause"></button>
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
-        <span class="ex-time">0:00 / 0:00</span>
       </div>
     </div>
     <div class="ex-panel" data-group="visual" data-ex="9" data-switches="20">
@@ -587,7 +583,6 @@
       <div class="ex-ctrl">
         <button class="ex-play" type="button" aria-label="Pause"></button>
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
-        <span class="ex-time">0:00 / 0:00</span>
       </div>
     </div>
 
@@ -932,19 +927,12 @@
     // Qualitative examples: each pair gets one shared scrubber, and only the
     // visible pair is ever loaded or played.
     (function () {
-      function fmt(t) {
-        if (!isFinite(t)) return '0:00';
-        var m = Math.floor(t / 60), s = Math.floor(t % 60);
-        return m + ':' + (s < 10 ? '0' : '') + s;
-      }
-
       // ---- one controller per panel ----------------------------------------
       function wire(panel) {
         var vids = Array.prototype.slice.call(panel.querySelectorAll('video'));
         var btn = panel.querySelector('.ex-play');
         var seek = panel.querySelector('.ex-seek');
         var marks = panel.querySelector('.ex-marks');
-        var label = panel.querySelector('.ex-time');
         var span = 0;          // longest clip in the pair
         var scrubbing = false;
         var wasPlaying = false;
@@ -972,7 +960,6 @@
           var pct = (t / span) * 100;
           seek.style.background =
             'linear-gradient(90deg, var(--accent) ' + pct + '%, var(--line) ' + pct + '%)';
-          label.textContent = fmt(t) + ' / ' + fmt(span);
         }
 
         function seekTo(t) {
