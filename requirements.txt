@@ -1,0 +1,17 @@
+# WorldMark dependencies.
+#
+# The four compute stages use DIFFERENT deep-learning backbones whose torch
+# versions conflict, so they MUST live in separate virtual environments. Install
+# each stage's env from the corresponding file below; the aggregation/plotting
+# needs only numpy + scipy + matplotlib (any of the envs, or a plain one).
+#
+#   Action Dynamics (M1-M4)  ->  requirements/flow.txt         (SEA-RAFT + Depth-Anything-3)
+#   Visual Quality           ->  requirements/qalign.txt       (Q-Align / OneAlign, mPLUG-Owl2)
+#   World Memory Local/Revisit (C1/C2) -> requirements/consistency.txt (DINOv2 + LPIPS + TransNetV2)
+#   World Memory Global (C3) ->  requirements/c3.txt           (VGGT-Omega)
+#
+# Common (aggregation + table rendering):
+numpy>=1.24
+scipy>=1.10
+matplotlib>=3.7
+decord>=0.6.0

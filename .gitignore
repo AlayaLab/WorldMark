@@ -15,3 +15,12 @@ make_animated_ppt.py
 .claude/
 worldmark_alaya/
 worldmark_alaya.zip
+
+# Evaluation outputs
+results/
+results_*/
+videos/
+logs/
+*.npz
+worldmark_code/
+worldmark_code.zip

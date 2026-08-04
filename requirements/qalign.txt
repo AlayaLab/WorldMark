@@ -1,0 +1,10 @@
+# Visual Quality: Q-Align / OneAlign (mPLUG-Owl2 LMM). Deterministic logit-readout scoring.
+#   Repo: https://github.com/Q-Future/Q-Align   (model id via QALIGN_MODEL, default q-future/one-align)
+# Known-good pin (NGC/torch2.1 stack):
+torch==2.1.2
+transformers==4.36.1
+accelerate==0.26.1
+numpy==1.26.4
+decord>=0.6.0
+pillow
+icecream
