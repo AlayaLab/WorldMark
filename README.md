@@ -9,7 +9,7 @@ three complementary axes — **Action Dynamics**, **World Memory**, and
 **Visual Quality** — for a total of **9 metrics**. All metrics are
 **deterministic and reproducible** (no SLAM randomness, no LLM sampling).
 
-<img src="docs/static/images/teaser.png" width="50%" alt="WorldMark overview: per-model adapters translate one shared action vocabulary into each model's native control format; a round-trip probe compares outbound and return views at equal accumulated motion.">
+<img src="docs/static/images/teaser.jpg" width="50%" alt="WorldMark overview: per-model adapters translate one shared action vocabulary into each model's native control format; a round-trip probe compares outbound and return views at equal accumulated motion.">
 
 Given a video the model produced in response to a scripted action sequence
 (`W` forward / `S` back / `A` strafe-left / `D` strafe-right / `L` yaw-left /
