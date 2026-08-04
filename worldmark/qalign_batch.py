@@ -1,6 +1,6 @@
 """Q-Align (OneAlign) quality + aesthetics over the canonical set (1fps video mode).
 
-Dual-GPU sharding via SHARD/NSHARD. Writes results_quality/qalign_shard{S}of{N}.json.
+Optional multi-GPU sharding via SHARD/NSHARD (default: single GPU). Writes results_quality/qalign_shard{S}of{N}.json.
 """
 import os, sys, glob, json
 import wm_config as config

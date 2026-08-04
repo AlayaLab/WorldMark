@@ -19,7 +19,7 @@
 #   WORLDMARK_RESULTS  output root                                    (default ./results)
 #   EVAL_SUFFIX         tag appended to result dirs (e.g. _real_first) (default empty)
 #   PY_FLOW PY_QA PY_C3 PY_CONSISTENCY   per-stage python interpreters (default: python)
-#   NGPU                number of GPUs to shard across                 (default 2)
+#   NGPU                number of GPUs to shard across                 (default 1)
 # =============================================================================
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -30,7 +30,7 @@ PY_FLOW="${PY_FLOW:-python}"                 # env with SEA-RAFT + Depth-Anythin
 PY_QA="${PY_QA:-python}"                     # env with Q-Align / OneAlign
 PY_C3="${PY_C3:-python}"                     # env with VGGT-Omega
 PY_CONSISTENCY="${PY_CONSISTENCY:-python}"   # env with DINOv2 + LPIPS + TransNetV2
-NGPU="${NGPU:-2}"
+NGPU="${NGPU:-1}"
 LOG="$HERE/logs"; mkdir -p "$LOG"
 
 run_stage(){   # name  done_grep  interpreter  script  extra_env

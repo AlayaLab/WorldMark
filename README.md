@@ -89,12 +89,13 @@ export PY_FLOW=envs/flow/bin/python
 export PY_QA=envs/qalign/bin/python
 export PY_C3=envs/c3/bin/python
 export PY_CONSISTENCY=envs/consistency/bin/python
-export NGPU=2
+# export NGPU=2   # optional: shard across N GPUs (default 1)
 
 bash run_eval.sh
 ```
 
-This runs all stages (each idempotent, resumable, sharded across `NGPU` GPUs),
+This runs all stages on a single GPU by default (each idempotent, resumable,
+and shardable across `NGPU` GPUs),
 then writes:
 - `$WORLDMARK_RESULTS/results_quality$EVAL_SUFFIX/final_master.csv`
 - `$WORLDMARK_RESULTS/master_table_<tag>.png` (colored: green = 1st, yellow = 2nd, red = worst per column)
@@ -106,16 +107,17 @@ change the reporting normalization without recomputing.
 Each stage is a standalone script under `worldmark/`, driven by
 `SHARD` / `NSHARD` / `CUDA_VISIBLE_DEVICES` and the `wm_config.py` paths:
 ```bash
-PYTHONPATH=worldmark SHARD=0 NSHARD=2 CUDA_VISIBLE_DEVICES=0 $PY_FLOW worldmark/flow_batch_full.py
+PYTHONPATH=worldmark CUDA_VISIBLE_DEVICES=0 $PY_FLOW worldmark/flow_batch_full.py
+# multi-GPU: run one process per shard, e.g. SHARD=0 NSHARD=2 / SHARD=1 NSHARD=2
 ```
 
 ---
 
 ## Cost & reproducibility
 
-- **~45 min per 125-video set** on 2× H200 for all 9 metrics (dominated by the
-  M1-M4 flow stage; the other stages total ~17 min). With the flow cache present,
-  a re-score is ~17 min.
+- **~1.5 h per 125-video set** on a single H200 for all 9 metrics, dominated by
+  the M1-M4 flow stage; sharding scales linearly (~45 min on two GPUs via
+  `NGPU=2`). With the flow cache present, a re-score takes a fraction of that.
 - All metrics are deterministic: Q-Align and VGGT-Omega are bit-identical
   run-to-run; SLAM back-ends (DROID-SLAM, ViPE) were deliberately **not** used for
   Global Memory because they are non-reproducible.
