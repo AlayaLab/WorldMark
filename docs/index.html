@@ -87,16 +87,21 @@
     .wrap-wide { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
     section { padding: 44px 0 12px; }
     .kicker {
-      font-size: 12.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 6px;
+      font-size: 30px; font-weight: 800; letter-spacing: -0.02em;
+      color: var(--accent); margin-bottom: 2px;
     }
-    h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 16px; }
+    h2 { font-size: 19px; font-weight: 600; color: var(--ink-soft); letter-spacing: 0; margin-bottom: 16px; }
+    .arena-cta h2 { font-size: 30px; font-weight: 800; color: #fff; }
     h3 { font-size: 20px; font-weight: 700; margin: 26px 0 10px; }
     p + p { margin-top: 12px; }
     .muted { color: var(--ink-soft); }
     figure { margin: 26px 0 8px; }
-    figcaption { font-size: 13.5px; color: var(--ink-faint); margin-top: 10px; text-align: center; line-height: 1.55; }
-    .figframe { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #fff; }
+    figcaption { font-size: 13.5px; color: var(--ink-faint); margin-top: 10px; text-align: center; line-height: 1.55; max-width: 720px; margin-left: auto; margin-right: auto; }
+    .figframe { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #fff; max-width: 50%; margin: 0 auto; }
+    @media (max-width: 860px) { .figframe { max-width: 100%; } }
+    details.mosaic { margin: 20px 0; border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 18px; }
+    details.mosaic summary { cursor: pointer; font-weight: 700; font-size: 15px; color: var(--accent); }
+    details.mosaic .figframe { margin-top: 14px; }
 
     /* ── Hero ────────────────────────────────── */
     .hero { text-align: center; padding: 64px 0 30px; }
@@ -235,6 +240,21 @@
     .arena-cta .btn { background: #fff; color: var(--accent); }
 
     /* ── BibTeX / footer ─────────────────────── */
+    /* ── Right side nav ──────────────────────── */
+    .side-nav {
+      position: fixed; right: 18px; top: 50%; transform: translateY(-50%);
+      z-index: 40; list-style: none; padding: 0; margin: 0;
+    }
+    .side-nav li { margin-bottom: 2px; }
+    .side-nav a {
+      display: block; padding: 5px 12px; font-size: 12.5px; font-weight: 600;
+      color: var(--ink-faint); text-align: right; white-space: nowrap;
+      border-right: 2px solid var(--line); transition: color .12s ease, border-color .12s ease;
+    }
+    .side-nav a:hover { color: var(--ink); border-right-color: var(--ink-faint); text-decoration: none; }
+    .side-nav a.active { color: var(--accent); font-weight: 800; border-right-color: var(--accent); }
+    @media (max-width: 1560px) { .side-nav { display: none; } }
+
     .bib-box { position: relative; background: #14161f; border-radius: var(--radius); padding: 22px 24px; overflow-x: auto; }
     .bib-box pre { font-family: var(--mono); font-size: 13px; line-height: 1.7; color: #d7dae4; font-weight: 600; }
     .copy-btn {
@@ -420,6 +440,17 @@
       <div class="figframe"><img src="static/images/image_suite.jpg" alt="Image Suite overview: diverse scenes and styles in first- and third-person views" loading="lazy"></div>
       <figcaption>Overview of the Image Suite. Diverse scenes and styles, shown in first- and third-person views.</figcaption>
     </figure>
+    <figure>
+      <div class="figframe"><img src="static/images/suite_coverage.png" alt="Coverage of the retained references against the WorldScore pool in CLIP feature space" loading="lazy"></div>
+      <figcaption>Coverage in CLIP feature space: the WorldScore pool in grey (n = 1000 per domain) against the retained references in red (n = 25), under four independent t-SNE projections. The selection scatters across the occupied region in all panels&mdash;what was discarded was repetition, not coverage.</figcaption>
+    </figure>
+    <details class="mosaic">
+      <summary>Show the complete Image Suite (all 100 test images)</summary>
+      <figure style="margin-top: 0;">
+        <div class="figframe" style="max-width: 100%;"><img src="static/images/image_suite_all.jpg" alt="All 100 test images: photorealistic above, stylized below, each scene as a first-/third-person pair" loading="lazy"></div>
+        <figcaption>All 100 test images, photorealistic above and stylized below. Each adjacent pair is one scene: the first-person reference on the left, its third-person counterpart on the right&mdash;the same camera with a character composited into frame, so a pair agrees everywhere except around the added figure.</figcaption>
+      </figure>
+    </details>
 
     <h3>Action Suite &mdash; 15 trajectories, 3 functional tiers</h3>
     <div class="tiers">
@@ -480,6 +511,31 @@
         </ul>
       </div>
     </div>
+
+    <h3>Why Accuracy and Purity are not interchangeable</h3>
+    <p>
+      Accuracy is <em>signed</em> by the commanded direction; Purity is a ratio of channel magnitudes and carries no sign.
+      A model that yaws the wrong way still keeps its motion in the yaw channel, so it stays pure while Accuracy collapses:
+      HY-GameCraft&nbsp;1.0 reads <strong>2.7 Accuracy against 63.1 Purity</strong> on rotation.
+      Reporting both separates a model that turns the wrong way from one that turns raggedly.
+    </p>
+    <figure>
+      <div class="figframe"><img src="static/images/da_dp_schematic.png" alt="Schematic: three cameras under the same strafe-right command, showing how Accuracy and Purity fail independently" loading="lazy"></div>
+      <figcaption>All three cameras receive the same strafe-right command (grey dashed); the solid line is the path taken, from above. (b)&nbsp;moves right&mdash;Accuracy holds&mdash;but much of its motion is off-axis, which Purity penalizes. (c)&nbsp;stays entirely on the commanded axis&mdash;Purity is as high as (a)&mdash;yet runs the wrong way, and Accuracy collapses. Each metric is blind to the failure the other catches.</figcaption>
+    </figure>
+
+    <h3>Why optical flow, not pose</h3>
+    <p>
+      Response Latency times the onset of a new command and Motion Stability counts ~0.3s stalls, so both need per-frame sampling.
+      At that rate, optical flow is a <em>measured velocity</em>, while a pose stream is a reconstructed position that must be differenced&mdash;and differencing scales noise as 1/&Delta;t.
+      On 30 direction-reversing clips per domain, median per-frame velocity noise is <strong>0.08 for flow</strong> vs 0.28 for SLAM and 0.63 for a feed-forward pose estimator;
+      SLAM additionally leaves the plot entirely on roughly one clip in eight, peaking at 1119, whenever tracking is lost.
+      Flow recovers the commanded reversal on every clip in both domains.
+    </p>
+    <figure>
+      <div class="figframe"><img src="static/images/flow_vs_pose.png" alt="Per-frame velocity noise for flow, SLAM, and feed-forward pose estimation" loading="lazy"></div>
+      <figcaption>Per-frame velocity noise at 16&nbsp;fps for the three candidate signals (log axis; bars are medians, dots individual clips). Flow is both the lowest and the tightest in each domain.</figcaption>
+    </figure>
   </section>
 
   <!-- ── Results ── -->
@@ -635,6 +691,39 @@
     </tbody></table></div></div>
   </section>
 
+  <!-- ── Capability profiles ── -->
+  <section class="wrap" id="profiles">
+    <p class="kicker">Capability Profiles</p>
+    <h2>Read the shapes, not the areas</h2>
+    <p class="muted">
+      Every model over all thirteen columns, First-Person Real (solid) against Stylized (dashed).
+      There is <strong style="color: var(--ink);">one all-round model and no second</strong>: Lyra&nbsp;2.0 is the only near-convex profile, at or above the suite mean on 12 of 13 columns.
+      And the stylization penalty falls hardest on the strongest models&mdash;summed over the columns it ranges from 38.8 (DreamX-World) to 110.6 (Lyra&nbsp;2.0), precisely the models that lead on Real.
+    </p>
+    <figure>
+      <div class="figframe"><img src="static/images/capability_profiles.png" alt="Radar capability profile of each model over thirteen columns, Real vs Stylized overlaid" loading="lazy"></div>
+      <figcaption>Capability profile of each model. All axes run 0&ndash;100 in the same order in every panel; the gap between the two outlines is that model's stylization penalty, systematic only on the three memory axes.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ── Qualitative examples ── -->
+  <section class="wrap" id="examples">
+    <p class="kicker">Qualitative Examples</p>
+    <h2>What each failure looks like</h2>
+    <p class="muted">
+      One high- and one low-scoring case per metric, holding scene, command, and sampling fixed within each pair&mdash;the only difference is the model.
+      The Action Dynamics rows carry a signal panel as well as frames, because their failures are in the <em>motion</em> rather than the pixels: six stills cannot show that a model kept turning after the command changed.
+    </p>
+    <figure>
+      <div class="figframe"><img src="static/images/metric_examples_action.jpg" alt="High- and low-scoring examples for each Action Dynamics metric with flow signal panels" loading="lazy"></div>
+      <figcaption>Action Dynamics examples. The panel at left is the signal the metric reads; shading marks what the flow on the commanded axis <em>should</em> do, and the dashed rule in Response Latency is the command switch. Green marks the high-scoring model, red the low-scoring one.</figcaption>
+    </figure>
+    <figure>
+      <div class="figframe"><img src="static/images/metric_examples_rest.jpg" alt="High- and low-scoring examples for memory and quality metrics" loading="lazy"></div>
+      <figcaption>Memory and quality examples, drawn from the span each metric actually reads: adjacent frames for Local Memory, outbound and return halves for Revisit Memory, the full trajectory otherwise. These failures are visible in the frames themselves.</figcaption>
+    </figure>
+  </section>
+
   <!-- ── Findings ── -->
   <section class="wrap" id="findings">
     <p class="kicker">Key Findings</p>
@@ -652,8 +741,10 @@
         Switching to third-person costs 13.9 points of rotational direction accuracy on average, against 4.0 translationally&mdash;and unevenly: Matrix-Game 2.0 loses 34.2 while SANA-WM is unaffected. Camera control around a visible character is a distinct capability.</div>
       <div class="finding"><span class="num">06</span><b>Stylization attacks memory, not action.</b>
         From Real to Stylized, all ten models lose local and global memory, while action dynamics barely moves. Command following is largely style-agnostic; keeping a stylized world self-consistent is not.</div>
-      <div class="finding" style="grid-column: 1 / -1;"><span class="num">07</span><b>Visual quality is not a proxy for controllability.</b>
-        Perceptual quality correlates positively with all three memory metrics (&rho; = 0.76&ndash;0.79) yet <em>negatively</em> with translational action dynamics, most strongly with response latency (&rho; = &minus;0.82). Yume 1.5 is the clearest case: first in perceptual quality and local memory, last in translational direction accuracy and latency. Ranking world models by appearance misranks them as interactive environments.</div>
+      <div class="finding"><span class="num">07</span><b>Visual quality is not a proxy for controllability.</b>
+        Perceptual quality correlates positively with all three memory metrics (&rho; = 0.76&ndash;0.79) yet <em>negatively</em> with translational action dynamics, most strongly with response latency (&rho; = &minus;0.82). Yume 1.5 is the clearest case: first in perceptual quality and local memory, last in translational direction accuracy and latency.</div>
+      <div class="finding"><span class="num">08</span><b>Difficulty breaks rotation, not translation.</b>
+        From Easy to Hard, rotational direction accuracy falls for eight of ten models while translational accuracy does not move (88.2 &rarr; 88.0); global memory loses 35% and is the only metric that collapses with difficulty. This also fixes 60s as the suite's end: a longer tier would rank models by the speed of their disintegration rather than expose a new failure.</div>
     </div>
   </section>
 
@@ -705,7 +796,42 @@
     @media (prefers-color-scheme: dark) { /* page is light-only; keep logo visible if embedded elsewhere */ }
   </style>
 
+  <!-- ── Right side nav ── -->
+  <ul class="side-nav">
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#comparison">Why WorldMark</a></li>
+    <li><a href="#suite">Benchmark Suite</a></li>
+    <li><a href="#metrics">Metrics</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#profiles">Capability Profiles</a></li>
+    <li><a href="#examples">Qualitative Examples</a></li>
+    <li><a href="#findings">Key Findings</a></li>
+    <li><a href="#human">Human Study</a></li>
+    <li><a href="#arena">Arena</a></li>
+    <li><a href="#bibtex">BibTeX</a></li>
+  </ul>
+
   <script>
+    // Scroll-spy for the side nav
+    (function () {
+      var links = document.querySelectorAll('.side-nav a');
+      var sections = [];
+      links.forEach(function (link) {
+        var el = document.getElementById(link.getAttribute('href').slice(1));
+        if (el) sections.push({ id: el.id, el: el });
+      });
+      function onScroll() {
+        var pos = window.scrollY + window.innerHeight / 3;
+        var current = '';
+        sections.forEach(function (s) { if (s.el.offsetTop <= pos) current = s.id; });
+        links.forEach(function (link) {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+        });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
     // Results tab switcher
     document.querySelectorAll('.tab').forEach(function (btn) {
       btn.addEventListener('click', function () {
