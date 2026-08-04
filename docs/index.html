@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>WorldMark: A Unified Benchmark Suite for Interactive Video World Models</title>
+  <meta name="description" content="WorldMark is the first standardized benchmark for interactive Image-to-Video world models, featuring a unified action-mapping layer, a hierarchical test suite of 500 cases, and a modular evaluation toolkit.">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="WorldMark: A Unified Benchmark Suite for Interactive Video World Models">
+  <meta property="og:description" content="The first standardized benchmark for interactive I2V world models with unified action mapping, 500 evaluation cases, and modular metrics.">
+  <meta property="og:image" content="static/images/social_preview.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WorldMark: A Unified Benchmark Suite for Interactive Video World Models">
+  <meta name="twitter:description" content="The first standardized benchmark for interactive I2V world models with unified action mapping, 500 evaluation cases, and modular metrics.">
+  <meta name="twitter:image" content="static/images/social_preview.png">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="static/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="static/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="static/images/favicon-16x16.png">
+  <link rel="icon" type="image/png" href="static/images/favicon.png">
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script defer src="static/js/bulma-carousel.min.js"></script>
+  <script defer src="static/js/bulma-slider.min.js"></script>
+  <script defer src="static/js/index.js"></script>
+</head>
+<body>
+
+  <main class="section">
+    <div class="container is-max-desktop">
+      <div class="content has-text-centered">
+        <h1 class="title is-2" style="margin-bottom: 0.5rem;">
+          <span style="font-family: 'Courier New', monospace; font-weight: 800;">WorldMark</span>: A Unified Benchmark Suite for Interactive Video World Models
+        </h1>
+
+        <p class="is-size-5" style="margin-bottom: 0.25rem;">
+          Xiaojie Xu<sup>1</sup>,
+          Zhengyuan Lin<sup>1,2</sup>,
+          Kang He<sup>1,3</sup>,
+          Yukang Feng<sup>1,3</sup>
+        </p>
+        <p class="is-size-5">
+          Xiaofeng Mao<sup>1</sup>,
+          Yuanyang Yin<sup>1,3</sup>,
+          Kaipeng Zhang<sup>1,3,&dagger;</sup>,
+          Yongtao Ge<sup>1,&dagger;</sup>
+        </p>
+
+        <p class="is-size-6 has-text-grey">
+          <sup>1</sup>Alaya Studio, Shanda AI Research Tokyo,
+          <sup>2</sup>The University of Tokyo,
+          <sup>3</sup>Shanghai Innovation Institute
+        </p>
+        <p class="is-size-6 has-text-grey" style="margin-top: 0.25rem;">
+          <sup>&dagger;</sup>Corresponding authors:
+          <a href="mailto:kaipeng.zhang@shanda.com">kaipeng.zhang@shanda.com</a>,
+          <a href="mailto:yongtao.ge@shanda.com">yongtao.ge@shanda.com</a>
+        </p>
+
+        <div class="affiliation-logos" style="display: flex; justify-content: center; align-items: center; gap: 3rem; margin-top: 1.5rem; flex-wrap: wrap;">
+          <img src="static/images/alaya.png" alt="Alaya Studio" class="logo-alaya" style="height: 60px; object-fit: contain;">
+          <img src="static/images/utokyo.png" alt="The University of Tokyo" style="height: 60px; object-fit: contain;">
+          <img src="static/images/sii.svg" alt="Shanghai Innovation Institute" style="height: 60px; object-fit: contain;">
+        </div>
+
+        <p class="buttons is-centered" style="margin-top: 1.5rem;">
+          <a class="button is-dark" href="https://arxiv.org/abs/2604.21686" target="_blank" rel="noopener">
+            <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span>
+          </a>
+          <a class="button is-dark" href="#" target="_blank" rel="noopener">
+            <span class="icon"><i class="fab fa-github"></i></span><span>Code & Data</span>
+          </a>
+          <a class="button arena-btn" href="https://warena.ai/" target="_blank" rel="noopener">
+            <span class="icon"><i class="fas fa-users"></i></span><span>World Model Arena</span>
+          </a>
+        </p>
+      </div>
+
+      <hr>
+
+      <!-- Abstract -->
+      <section class="section pt-0" id="abstract">
+        <div class="content">
+          <h2 class="title is-3">Abstract</h2>
+          <p>
+            Interactive video generation models&mdash;Genie, YUME, HY-World, Matrix-Game, among others&mdash;are advancing rapidly, yet every model is evaluated on its own proprietary benchmark with bespoke scenes and trajectories, making fair cross-model comparison impossible. Existing public benchmarks offer useful metrics such as trajectory error, aesthetic scores, and VLM-based judgments, but none supplies the <strong>standardized test conditions</strong>&mdash;identical scenes, identical action sequences, and a unified control interface&mdash;needed to make those metrics comparable across models with heterogeneous inputs.
+          </p>
+          <p>
+            We introduce <strong style="font-family: 'Courier New', monospace;">WorldMark</strong>, the first benchmark that provides such a common playing field for interactive Image-to-Video world models. <strong style="font-family: 'Courier New', monospace;">WorldMark</strong> contributes:
+            <strong>(1) a unified action-mapping layer</strong> that translates a shared WASD-style action vocabulary into each model's native control format, enabling apples-to-apples comparison across six major models on identical scenes and trajectories;
+            <strong>(2) a hierarchical test suite</strong> of 500 evaluation cases covering first- and third-person viewpoints, photorealistic and stylized scenes, and three difficulty tiers from Easy to Hard spanning 20&ndash;60s; and
+            <strong>(3) a modular evaluation toolkit</strong> for Visual Quality, Control Alignment, and World Consistency, designed so that researchers can reuse our standardized inputs while plugging in their own metrics as the field evolves.
+            We release all data, evaluation code, and model outputs to facilitate future research.
+          </p>
+        </div>
+      </section>
+
+      <!-- Introduction Video placeholder -->
+      <section class="section pt-0" id="video">
+        <div class="content">
+          <h2 class="title is-3">Introduction Video</h2>
+          <div style="border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-xl);">
+            <video width="100%" controls preload="metadata" poster="">
+              <source src="static/videos/intro.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </section>
+
+      <!-- Overview -->
+      <section class="section pt-0" id="overview">
+        <div class="content">
+          <h2 class="title is-3">Overview</h2>
+          <p>
+            Current interactive world models each define their own control interfaces, scenes, and evaluation protocols, making cross-model comparison impossible. <strong style="font-family: 'Courier New', monospace;">WorldMark</strong> resolves this fragmentation through three pillars: <strong>(a)</strong> A curated test suite of 500 cases spanning first- and third-person views with photorealistic and stylized scenes. <strong>(b)</strong> A unified action-mapping layer translating a shared WASD vocabulary into each model's native format. <strong>(c)</strong> Same reference image + same action sequence reveals striking quality divergence across models.
+          </p>
+          <figure class="image" style="margin: 2rem auto; max-width: 900px;">
+            <img src="static/images/teaser.png" alt="Overview of WorldMark: diverse scenes, unified action mapping, and cross-model comparison" loading="lazy" style="border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); width: 100%;">
+          </figure>
+        </div>
+      </section>
+
+      <!-- Benchmark Comparison Table -->
+      <section class="section pt-0" id="comparison">
+        <div class="content">
+          <h2 class="title is-3">Why WorldMark?</h2>
+          <p>Existing benchmarks lack standardized scenes, unified cross-model action mapping, keyboard-interactive support, or difficulty hierarchies. <strong style="font-family: 'Courier New', monospace;">WorldMark</strong> is the first to provide all of these.</p>
+
+          <div class="table-container" style="margin-top: 1.5rem;">
+            <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Benchmark</th>
+                  <th>Target Task</th>
+                  <th>Std. Scenes & Actions</th>
+                  <th>Unified Cross-Model</th>
+                  <th>Keyboard Interactive</th>
+                  <th>Difficulty Hierarchy</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>VBench</td>
+                  <td>T2V</td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                </tr>
+                <tr>
+                  <td>VBench++</td>
+                  <td>I2V</td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                </tr>
+                <tr>
+                  <td>WorldScore</td>
+                  <td>Traj cond. I2V/I2-3D</td>
+                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
+                  <td>~</td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                </tr>
+                <tr>
+                  <td>MIND</td>
+                  <td>Traj cond. I2V/V2V</td>
+                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
+                  <td>~</td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
+                </tr>
+                <tr style="background: #eef6ff; font-weight: 600;">
+                  <td><span style="font-family: 'Courier New', monospace;">WorldMark</span> (Ours)</td>
+                  <td>Interactive I2V</td>
+                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
+                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
+                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
+                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Image Suite -->
+      <section class="section pt-0" id="image-suite">
+        <div class="content">
+          <h2 class="title is-3">Image Suite</h2>
+          <p>
+            50 diverse reference images spanning three scene categories (<strong>Nature</strong>, <strong>City</strong>, <strong>Indoor</strong>), two visual styles (<strong>Real</strong>, <strong>Stylized</strong>), and two viewpoints (<strong>First-person</strong>, <strong>Third-person</strong>). The stylized subset covers oil painting, Ukiyo-e, cyberpunk, and Minecraft aesthetics, ensuring evaluation is not biased toward photorealistic domains alone. Cross-viewpoint pairs yield <strong>100 test images</strong> total.
+          </p>
+          <figure class="image" style="margin: 2rem auto; max-width: 900px;">
+            <img src="static/images/image_suite.png" alt="Image Suite overview showing diverse scenes and styles across Indoor, City, Nature categories in Real and Stylized variants" loading="lazy" style="border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); width: 100%;">
+            <figcaption class="has-text-centered has-text-grey is-size-7" style="margin-top: 0.75rem;"><strong>Fig. 2:</strong> Overview of the Image Suite. Diverse scenes and styles are covered, each shown in first-person and generated third-person views.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- Action Suite -->
+      <section class="section pt-0" id="action-suite">
+        <div class="content">
+          <h2 class="title is-3">Action Suite</h2>
+          <p>
+            15 standardized action sequences of increasing complexity, expressed in a shared vocabulary of <strong>WASD movement</strong> plus <strong>L/R yaw rotation</strong>:
+          </p>
+          <div class="columns is-multiline" style="margin-top: 1rem;">
+            <div class="column is-4">
+              <div class="notification" style="background: #eff6ff; border-radius: var(--border-radius);">
+                <p class="title is-6" style="color: #2563eb;">Easy (20s, single-segment)</p>
+                <p class="is-size-7">Pure forward motion, basic action compliance. Actions 1&ndash;5: Forward, Backward, Strafe Left, Strafe Right, Pan Right.</p>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="notification" style="background: #fef3c7; border-radius: var(--border-radius);">
+                <p class="title is-6" style="color: #d97706;">Medium (40s, two-segment)</p>
+                <p class="is-size-7">Smooth transitions between movement types. Actions 6&ndash;10: Forth & Back, Pan L & R, Strafe L & R, Walk+Pan, Reverse+Pan.</p>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="notification" style="background: #fce7f3; border-radius: var(--border-radius);">
+                <p class="title is-6" style="color: #db2777;">Hard (60s, three-segment)</p>
+                <p class="is-size-7">Complex patrol routes and 360&deg; panoramic rotations. Actions 11&ndash;15: Patrol, Sweep, Right Turn, Zigzag, Peek+Retract.</p>
+              </div>
+            </div>
+          </div>
+          <figure class="image" style="margin: 2rem auto; max-width: 800px;">
+            <img src="static/images/trajectories_3d.png" alt="The 15 standardized action sequences from elementary translations to combined and cyclic trajectories" loading="lazy" style="border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); width: 100%;">
+            <figcaption class="has-text-centered has-text-grey is-size-7" style="margin-top: 0.75rem;"><strong>Fig. 3:</strong> The 15 standardized action sequences, ranging from elementary translations and rotations to combined and cyclic trajectories.</figcaption>
+          </figure>
+
+          <p>Combined with 100 test images, this yields approximately <strong>500 standardized evaluation cases</strong>. A VLM-based scene-aware filtering step ensures only physically plausible actions are assigned to each image.</p>
+
+          <figure class="image" style="margin: 2rem auto;">
+            <img src="static/images/vlm_traj.png" alt="Context-aware action selection using VLM reasoning" loading="lazy" style="border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); width: 100%;">
+            <figcaption class="has-text-centered has-text-grey is-size-7" style="margin-top: 0.75rem;"><strong>Fig. 4:</strong> Context-aware action selection. A VLM analyzes the initial image to identify physical constraints and selects plausible action sequences from the predefined library.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- Quantitative Results -->
+      <section class="section pt-0" id="results">
+        <div class="content">
+          <h2 class="title is-3">Quantitative Results</h2>
+
+          <!-- Evaluation Dimensions -->
+          <p><strong style="font-family: 'Courier New', monospace;">WorldMark</strong> evaluates generated videos along three complementary dimensions with eight metrics:</p>
+
+          <div class="columns is-multiline" style="margin-top: 1.5rem; margin-bottom: 2rem;">
+            <div class="column is-4">
+              <div class="card" style="height: 100%; border-radius: var(--border-radius-lg); border-left: 4px solid #3b82f6;">
+                <div class="card-content">
+                  <p class="title is-5">Visual Quality</p>
+                  <ul style="margin-top: 0.5rem;">
+                    <li><strong>Aesthetic Quality</strong> &mdash; human-perceived aesthetic appeal via LAION aesthetic predictor</li>
+                    <li><strong>Imaging Quality</strong> &mdash; low-level distortion detection via MUSIQ</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="card" style="height: 100%; border-radius: var(--border-radius-lg); border-left: 4px solid #10b981;">
+                <div class="card-content">
+                  <p class="title is-5">Control Alignment</p>
+                  <ul style="margin-top: 0.5rem;">
+                    <li><strong>Translation Error</strong> &mdash; 3D camera pose via DROID-SLAM reconstruction</li>
+                    <li><strong>Rotation Error</strong> &mdash; geodesic angular deviation of heading</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="card" style="height: 100%; border-radius: var(--border-radius-lg); border-left: 4px solid #8b5cf6;">
+                <div class="card-content">
+                  <p class="title is-5">World Consistency</p>
+                  <ul style="margin-top: 0.5rem;">
+                    <li><strong>Reprojection Error</strong> &mdash; 3D spatial coherence via DROID-SLAM + DBA</li>
+                    <li><strong>State Consistency</strong> &mdash; spatiotemporal object stability</li>
+                    <li><strong>Content Consistency</strong> &mdash; hallucination detection</li>
+                    <li><strong>Style Consistency</strong> &mdash; global visual uniformity</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- First-Person Real -->
+          <h3 class="title is-4" style="margin-top: 2rem;">First-Person Real</h3>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-hoverable is-fullwidth is-size-7">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>YUME 1.5</th>
+                  <th>MatrixGame 2.0</th>
+                  <th>HY-World</th>
+                  <th>HY-Game</th>
+                  <th>Oasis</th>
+                  <th>Genie 3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="7" style="background: #f0f4ff; font-weight: 700; font-style: italic;">Visual Quality</td></tr>
+                <tr>
+                  <td>Aesthetic Quality &uarr;</td>
+                  <td><strong>56.94</strong></td><td>49.40</td><td><u>54.79</u></td><td>46.59</td><td>29.31</td><td>45.58</td>
+                </tr>
+                <tr>
+                  <td>Imaging Quality &uarr;</td>
+                  <td><strong>74.36</strong></td><td>68.11</td><td><u>69.37</u></td><td>49.31</td><td>28.08</td><td>64.14</td>
+                </tr>
+                <tr><td colspan="7" style="background: #f0fff4; font-weight: 700; font-style: italic;">Control Alignment</td></tr>
+                <tr>
+                  <td>Translation Error &darr;</td>
+                  <td>0.199</td><td>0.222</td><td><u>0.191</u></td><td><strong>0.159</strong></td><td>0.376</td><td>0.498</td>
+                </tr>
+                <tr>
+                  <td>Rotation Error &darr;</td>
+                  <td>2.107</td><td><strong>1.324</strong></td><td><u>2.079</u></td><td>6.019</td><td>4.892</td><td>4.247</td>
+                </tr>
+                <tr><td colspan="7" style="background: #f5f0ff; font-weight: 700; font-style: italic;">World Consistency</td></tr>
+                <tr>
+                  <td>Reprojection Error &darr;</td>
+                  <td>0.549</td><td>0.688</td><td>0.702</td><td><u>0.447</u></td><td>1.938</td><td><strong>0.441</strong></td>
+                </tr>
+                <tr>
+                  <td>State Consistency &uarr;</td>
+                  <td>5.344</td><td>4.151</td><td><u>5.913</u></td><td>4.073</td><td>2.585</td><td><strong>6.416</strong></td>
+                </tr>
+                <tr>
+                  <td>Content Consistency &uarr;</td>
+                  <td>3.820</td><td><u>7.415</u></td><td>6.352</td><td>5.814</td><td>3.748</td><td><strong>6.914</strong></td>
+                </tr>
+                <tr>
+                  <td>Style Consistency &uarr;</td>
+                  <td><u>7.119</u></td><td>3.181</td><td>5.142</td><td>3.726</td><td>1.797</td><td><strong>8.158</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- First-Person Stylized -->
+          <h3 class="title is-4" style="margin-top: 2rem;">First-Person Stylized</h3>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-hoverable is-fullwidth is-size-7">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>YUME 1.5</th>
+                  <th>MatrixGame 2.0</th>
+                  <th>HY-World</th>
+                  <th>HY-Game</th>
+                  <th>Oasis</th>
+                  <th>Genie 3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="7" style="background: #f0f4ff; font-weight: 700; font-style: italic;">Visual Quality</td></tr>
+                <tr>
+                  <td>Aesthetic Quality &uarr;</td>
+                  <td><u>57.03</u></td><td>47.74</td><td><strong>58.50</strong></td><td>44.02</td><td>30.84</td><td>46.84</td>
+                </tr>
+                <tr>
+                  <td>Imaging Quality &uarr;</td>
+                  <td><strong>69.15</strong></td><td>64.24</td><td><u>64.78</u></td><td>40.91</td><td>28.44</td><td>53.27</td>
+                </tr>
+                <tr><td colspan="7" style="background: #f0fff4; font-weight: 700; font-style: italic;">Control Alignment</td></tr>
+                <tr>
+                  <td>Translation Error &darr;</td>
+                  <td>0.223</td><td><u>0.182</u></td><td>0.244</td><td><strong>0.116</strong></td><td>0.350</td><td>0.261</td>
+                </tr>
+                <tr>
+                  <td>Rotation Error &darr;</td>
+                  <td>2.732</td><td><u>1.561</u></td><td>4.316</td><td><strong>0.932</strong></td><td>3.808</td><td>2.835</td>
+                </tr>
+                <tr><td colspan="7" style="background: #f5f0ff; font-weight: 700; font-style: italic;">World Consistency</td></tr>
+                <tr>
+                  <td>Reprojection Error &darr;</td>
+                  <td>0.638</td><td>0.672</td><td><u>0.638</u></td><td>0.640</td><td>1.877</td><td><strong>0.256</strong></td>
+                </tr>
+                <tr>
+                  <td>State Consistency &uarr;</td>
+                  <td>5.891</td><td>2.873</td><td><u>6.408</u></td><td>4.782</td><td>3.523</td><td><strong>6.835</strong></td>
+                </tr>
+                <tr>
+                  <td>Content Consistency &uarr;</td>
+                  <td>5.362</td><td>6.457</td><td><u>7.159</u></td><td>5.196</td><td>3.114</td><td><strong>7.306</strong></td>
+                </tr>
+                <tr>
+                  <td>Style Consistency &uarr;</td>
+                  <td>4.216</td><td>4.934</td><td><u>6.817</u></td><td>4.051</td><td>2.435</td><td><strong>7.523</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Third-Person -->
+          <h3 class="title is-4" style="margin-top: 2rem;">Third-Person</h3>
+          <p class="is-size-7 has-text-grey">Only three models natively support third-person perspective: MatrixGame 2.0, HY-World, and Genie 3.</p>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-hoverable is-fullwidth is-size-7">
+              <thead>
+                <tr>
+                  <th rowspan="2">Metric</th>
+                  <th colspan="3" class="has-text-centered">Real</th>
+                  <th colspan="3" class="has-text-centered">Stylized</th>
+                </tr>
+                <tr>
+                  <th>MatrixGame 2.0</th><th>HY-World</th><th>Genie 3</th>
+                  <th>MatrixGame 2.0</th><th>HY-World</th><th>Genie 3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="7" style="background: #f0f4ff; font-weight: 700; font-style: italic;">Visual Quality</td></tr>
+                <tr>
+                  <td>Aesthetic Quality &uarr;</td>
+                  <td><u>52.78</u></td><td><strong>57.69</strong></td><td>51.04</td>
+                  <td>51.60</td><td><strong>60.57</strong></td><td><u>53.76</u></td>
+                </tr>
+                <tr>
+                  <td>Imaging Quality &uarr;</td>
+                  <td><u>67.26</u></td><td><strong>70.76</strong></td><td>60.20</td>
+                  <td><u>65.24</u></td><td><strong>66.45</strong></td><td>63.98</td>
+                </tr>
+                <tr><td colspan="7" style="background: #f0fff4; font-weight: 700; font-style: italic;">Control Alignment</td></tr>
+                <tr>
+                  <td>Translation Error &darr;</td>
+                  <td>0.284</td><td><strong>0.206</strong></td><td><u>0.212</u></td>
+                  <td>0.230</td><td><u>0.220</u></td><td><strong>0.129</strong></td>
+                </tr>
+                <tr>
+                  <td>Rotation Error &darr;</td>
+                  <td>27.606</td><td><strong>2.137</strong></td><td><u>14.905</u></td>
+                  <td>9.211</td><td><strong>5.285</strong></td><td><u>8.823</u></td>
+                </tr>
+                <tr><td colspan="7" style="background: #f5f0ff; font-weight: 700; font-style: italic;">World Consistency</td></tr>
+                <tr>
+                  <td>Reprojection Error &darr;</td>
+                  <td>0.814</td><td><u>0.640</u></td><td><strong>0.584</strong></td>
+                  <td>0.744</td><td><u>0.713</u></td><td><strong>1.148</strong></td>
+                </tr>
+                <tr>
+                  <td>State Consistency &uarr;</td>
+                  <td>5.136</td><td><u>6.628</u></td><td><strong>7.082</strong></td>
+                  <td>3.625</td><td><u>5.274</u></td><td><strong>7.565</strong></td>
+                </tr>
+                <tr>
+                  <td>Content Consistency &uarr;</td>
+                  <td>3.405</td><td><u>5.707</u></td><td><strong>7.424</strong></td>
+                  <td>2.083</td><td><u>5.147</u></td><td><strong>7.109</strong></td>
+                </tr>
+                <tr>
+                  <td>Style Consistency &uarr;</td>
+                  <td>1.659</td><td><u>4.491</u></td><td><strong>8.247</strong></td>
+                  <td>2.942</td><td><u>7.236</u></td><td><strong>8.541</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Takeaways -->
+      <section class="section pt-0" id="takeaways">
+        <div class="content">
+          <h2 class="title is-3">Key Takeaways</h2>
+          <div class="columns is-multiline">
+            <div class="column is-6">
+              <div class="notification" style="background: #fefce8; border-radius: var(--border-radius); border-left: 4px solid #eab308;">
+                <p><strong>Visual quality and world consistency are largely uncorrelated.</strong> YUME produces the most appealing frames yet its worlds lack global coherence, while Genie 3 maintains the most consistent worlds with only moderate frame-level fidelity.</p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="notification" style="background: #eff6ff; border-radius: var(--border-radius); border-left: 4px solid #3b82f6;">
+                <p><strong>Strong control alignment does not imply overall quality.</strong> HY-Game follows commands precisely but at the cost of visual fidelity, whereas Genie 3 has higher trajectory error yet preserves a globally coherent world.</p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="notification" style="background: #fce7f3; border-radius: var(--border-radius); border-left: 4px solid #ec4899;">
+                <p><strong>Third-person generation exposes severe weaknesses.</strong> MatrixGame's rotation error explodes by ~20&times;, highlighting the difficulty of maintaining camera control around a visible character.</p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="notification" style="background: #f0fdf4; border-radius: var(--border-radius); border-left: 4px solid #22c55e;">
+                <p><strong>Domain-specific training does not transfer.</strong> Open-Oasis, trained on Minecraft, fails across all metrics on real-world and stylized scenes.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BibTeX -->
+      <section class="section pt-0" id="bibtex">
+        <div class="content">
+          <div class="bibtex-header">
+            <h2 class="title is-3">BibTeX</h2>
+            <button class="copy-bibtex-btn" type="button" data-copy-target="bibtex-code">
+              Copy
+            </button>
+          </div>
+          <pre><code id="bibtex-code">@article{xu2026worldmark,
+  title={WorldMark: A Unified Benchmark Suite for Interactive Video World Models},
+  author={Xu, Xiaojie and Lin, Zhengyuan and He, Kang and Feng, Yukang and Mao, Xiaofeng and Yin, Yuanyang and Zhang, Kaipeng and Ge, Yongtao},
+  journal={arXiv preprint arXiv:2604.21686},
+  year={2026}
+}</code></pre>
+        </div>
+      </section>
+
+      <footer class="footer mt-6">
+        <div class="content has-text-centered">
+          <p class="is-size-7">
+            This page is adapted from the
+            <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener">Academic Project Page Template</a>
+            and licensed under
+            <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <style>
+    /* Invert black Alaya logo on dark backgrounds */
+    @media (prefers-color-scheme: dark) {
+      .logo-alaya { filter: invert(1); }
+    }
+
+    /* Model Arena button */
+    .arena-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) !important;
+      color: white !important;
+      border: none !important;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      font-weight: 700 !important;
+    }
+    .arena-btn:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #f093fb 50%, #667eea 100%) !important;
+      box-shadow: 0 6px 20px rgba(118, 75, 162, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .video-embed {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: var(--shadow-xl);
+      background: #000;
+    }
+    .video-embed iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Result table styling */
+    .table th, .table td {
+      vertical-align: middle !important;
+      text-align: center;
+    }
+    .table th:first-child, .table td:first-child {
+      text-align: left;
+    }
+    .table strong {
+      color: #1e40af;
+    }
+    .table u {
+      text-decoration-color: #94a3b8;
+    }
+
+    /* Right-side Navigation */
+    .side-nav {
+      position: fixed;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .side-nav li {
+      margin-bottom: 0.5rem;
+    }
+    .side-nav a {
+      display: block;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-light);
+      text-decoration: none;
+      border-right: 2px solid transparent;
+      transition: var(--transition);
+      text-align: right;
+      white-space: nowrap;
+    }
+    .side-nav a:hover {
+      color: var(--primary-color);
+      border-right-color: var(--primary-color);
+    }
+    .side-nav a.active {
+      color: var(--primary-color);
+      font-weight: 700;
+      border-right-color: var(--primary-color);
+    }
+    @media screen and (max-width: 1400px) {
+      .side-nav {
+        display: none;
+      }
+    }
+
+    /* Card hover */
+    .card {
+      transition: var(--transition);
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+  </style>
+  <!-- Right-side Navigation -->
+  <ul class="side-nav">
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#video">Video</a></li>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#comparison">Why WorldMark?</a></li>
+    <li><a href="#image-suite">Image Suite</a></li>
+    <li><a href="#action-suite">Action Suite</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#takeaways">Key Takeaways</a></li>
+    <li><a href="#bibtex">BibTeX</a></li>
+  </ul>
+
+  <script>
+    // Scroll-spy for side navigation
+    document.addEventListener('DOMContentLoaded', function() {
+      const navLinks = document.querySelectorAll('.side-nav a');
+      const sections = [];
+      navLinks.forEach(function(link) {
+        var id = link.getAttribute('href').slice(1);
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+      });
+      function onScroll() {
+        var scrollPos = window.scrollY + window.innerHeight / 3;
+        var current = '';
+        sections.forEach(function(s) {
+          if (s.el.offsetTop <= scrollPos) current = s.id;
+        });
+        navLinks.forEach(function(link) {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+        });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    });
+  </script>
+</body>
+</html>
