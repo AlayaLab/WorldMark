@@ -4,21 +4,12 @@
 **[Paper](https://arxiv.org/abs/2604.21686)** ·
 **[World Model Arena](https://warena.ai/)**
 
-<p align="center">
-  <img src="docs/static/images/teaser.png" width="620" alt="WorldMark overview: per-model adapters translate one shared action vocabulary into each model's native control format; a round-trip probe compares outbound and return views at equal accumulated motion.">
-</p>
-
-<p align="center"><sub>
-Models take actions in incompatible formats — keyboard actions, text prompts, camera
-trajectories — so per-model adapters translate one shared vocabulary into each native
-format. For a frame on the outbound leg and its return-leg counterpart at equal
-accumulated motion, the two views should match but diverge to different degrees.
-</sub></p>
-
 A benchmark for **interactive world models** that scores generated videos along
 three complementary axes — **Action Dynamics**, **World Memory**, and
 **Visual Quality** — for a total of **9 metrics**. All metrics are
 **deterministic and reproducible** (no SLAM randomness, no LLM sampling).
+
+<img src="docs/static/images/teaser.png" width="50%" alt="WorldMark overview: per-model adapters translate one shared action vocabulary into each model's native control format; a round-trip probe compares outbound and return views at equal accumulated motion.">
 
 Given a video the model produced in response to a scripted action sequence
 (`W` forward / `S` back / `A` strafe-left / `D` strafe-right / `L` yaw-left /
