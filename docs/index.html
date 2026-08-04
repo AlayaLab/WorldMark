@@ -129,20 +129,6 @@
     .btn svg { width: 17px; height: 17px; fill: currentColor; }
     .btn.arena { background: linear-gradient(120deg, #5b2ee5, #9333ea, #d946ef); }
 
-    /* ── Stats strip ─────────────────────────── */
-    .stats { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 44px auto 0; max-width: 1020px; }
-    .stat {
-      flex: 1 1 260px; padding: 20px 22px; text-align: center;
-      background: var(--bg-alt); border-radius: var(--radius);
-    }
-    .stat b { display: block; font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); }
-    .stat span { font-size: 14px; font-weight: 700; color: var(--ink); }
-    .stat ul { list-style: none; margin-top: 12px; text-align: left; }
-    .stat li {
-      font-size: 12.5px; line-height: 1.5; color: var(--ink-soft);
-      padding: 5px 0 5px 16px; border-top: 1px dashed var(--line); position: relative;
-    }
-    .stat li::before { content: "·"; position: absolute; left: 4px; font-weight: 800; color: var(--accent); }
 
     /* ── Bullet lists ────────────────────────── */
     .blist-head { font-size: 15px; font-weight: 800; color: var(--ink); margin-top: 26px; }
@@ -159,17 +145,6 @@
     .blist.bad  li::before { content: "✗"; color: #d43c3c; }
     .blist.good li::before { content: "✓"; color: #0a8a5f; }
 
-    /* ── Comparison table ────────────────────── */
-    .cmp-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); max-width: 760px; margin-left: auto; margin-right: auto; }
-    table.cmp { border-collapse: collapse; width: 100%; font-size: 12.5px; min-width: 620px; }
-    .cmp th, .cmp td { padding: 7px 10px; text-align: center; border-bottom: 1px solid var(--line); }
-    .cmp thead th { background: var(--bg-alt); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
-    .cmp td:first-child, .cmp th:first-child { text-align: left; font-weight: 600; }
-    .cmp tr.ours { background: var(--accent-soft); font-weight: 700; }
-    .cmp tr:last-child td { border-bottom: none; }
-    .yes { color: #0a8a5f; font-weight: 800; }
-    .no  { color: #d43c3c; font-weight: 800; }
-    .part{ color: #d97706; font-weight: 800; }
 
     /* ── Metric cards ────────────────────────── */
     .cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
@@ -238,6 +213,49 @@
     .rtable td.best { font-weight: 800; color: var(--accent); }
     .rtable td.second { text-decoration: underline; text-decoration-color: var(--ink-faint); text-underline-offset: 3px; }
     .tbl-note { font-size: 13px; color: var(--ink-faint); margin-top: 10px; }
+
+    /* ── Video examples ──────────────────────── */
+    .ex-h {
+      display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+      font-size: 19px; font-weight: 800; color: var(--ink);
+      margin: 34px 0 0; padding-top: 20px; border-top: 1px solid var(--line);
+    }
+    .ex-h:first-of-type { border-top: none; padding-top: 0; margin-top: 26px; }
+    .ex-h span { font-size: 14px; font-weight: 500; color: var(--ink-faint); }
+    .ex-tabs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 12px 0 6px; }
+    .ex-tab {
+      padding: 6px 13px; border-radius: 999px; font-size: 13px; font-weight: 600;
+      border: 1.5px solid var(--line); background: #fff; color: var(--ink-soft);
+      cursor: pointer; transition: all .12s ease; font-family: inherit;
+    }
+    .ex-tab:hover { border-color: var(--ink-faint); color: var(--ink); }
+    .ex-tab.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .ex-panel { display: none; }
+    .ex-panel.active { display: block; }
+    .ex-cmd {
+      font-size: 13.5px; color: var(--ink-soft); background: var(--bg-alt);
+      border-radius: 10px; padding: 11px 15px; margin-top: 12px; line-height: 1.6;
+    }
+    .ex-cmd b { color: var(--ink); font-weight: 700; }
+    .ex-cmd code {
+      font-family: var(--mono); font-size: 12.5px; font-weight: 800;
+      background: #fff; border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px;
+    }
+    .ex-pair { display: flex; gap: 16px; margin-top: 14px; }
+    .ex-pair figure { flex: 1; margin: 0; min-width: 0; }
+    .ex video { width: 100%; display: block; border-radius: 10px; background: #000; }
+    .ex figcaption {
+      margin-top: 8px; text-align: left; font-size: 14px; font-weight: 600; color: var(--ink);
+    }
+    .ex .tag {
+      display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .05em;
+      text-transform: uppercase; padding: 2px 8px; border-radius: 999px; margin-right: 7px;
+    }
+    .ex.good .tag { background: #eafaf2; color: var(--vq); }
+    .ex.bad  .tag { background: #fdecec; color: #d43c3c; }
+    .ex.good video { box-shadow: 0 0 0 2px var(--vq); }
+    .ex.bad  video { box-shadow: 0 0 0 2px #d43c3c; }
+    @media (max-width: 760px) { .ex-pair { flex-direction: column; } }
 
     /* ── Findings ────────────────────────────── */
     .findings { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
@@ -351,35 +369,6 @@
       </a>
     </div>
 
-    <div class="stats">
-      <div class="stat">
-        <b>10</b><span>Models Evaluated</span>
-        <ul>
-          <li>Yume 1.5 &middot; HY-World 1.5 &middot; HY-GameCraft 1.0</li>
-          <li>Matrix-Game 2.0 / 3.0 &middot; LingBot-World</li>
-          <li>SANA-WM &middot; DreamX-World &middot; AlayaWorld &middot; Lyra 2.0</li>
-          <li>Caption, pose, keyboard &amp; trajectory control formats&mdash;one adapter each</li>
-        </ul>
-      </div>
-      <div class="stat">
-        <b>500</b><span>Standardized Cases</span>
-        <ul>
-          <li>50 scenes: 25 photorealistic + 25 stylized</li>
-          <li>Paired first-/third-person views (100 images)</li>
-          <li>5 VLM-selected trajectories per image</li>
-          <li>3 difficulty tiers, 20&ndash;60s</li>
-        </ul>
-      </div>
-      <div class="stat">
-        <b>9</b><span>Deterministic Metrics</span>
-        <ul>
-          <li>Action Dynamics: accuracy, purity, latency, stability (per axis)</li>
-          <li>World Memory: local, global, revisit</li>
-          <li>Visual Quality: perceptual, aesthetic</li>
-          <li>Feed-forward only&mdash;bit-identical across runs</li>
-        </ul>
-      </div>
-    </div>
   </header>
 
   <!-- ── Teaser ── -->
@@ -393,49 +382,129 @@
     </figure>
   </section>
 
+  <!-- ── Qualitative video examples ── -->
+  <section class="wrap" id="examples">
+    <p class="kicker">Qualitative Examples</p>
+    <h2>What each metric actually sees</h2>
+    <p class="muted">
+      A high- and a low-scoring model per metric, on the <strong>same scene under the same command</strong>&mdash;the only
+      difference is the model. The on-screen keys show the command being issued.
+    </p>
+
+    <h3 class="ex-h">Action Dynamics <span>Does the world go where it is told&mdash;and when?</span></h3>
+    <div class="ex-tabs" data-group="action" role="tablist">
+      <button class="ex-tab active" data-group="action" data-ex="1">Direction Accuracy</button>
+      <button class="ex-tab" data-group="action" data-ex="2">Direction Purity</button>
+      <button class="ex-tab" data-group="action" data-ex="3">Motion Stability</button>
+      <button class="ex-tab" data-group="action" data-ex="4">Response Latency</button>
+    </div>
+    <div class="ex-panel active" data-group="action" data-ex="1">
+      <p class="ex-cmd"><b>Command</b> Forth &amp; Back &nbsp;<code>W&rarr;S</code>&nbsp; 40s
+        &nbsp;&middot;&nbsp; <b>Look for</b> whether the camera actually reverses when the command flips, or keeps advancing through both halves.</p>
+      <div class="ex-pair">
+        <figure class="ex good"><video src="static/videos/examples/m1_good.mp4" poster="static/videos/examples/m1_good.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">High</span> Matrix-Game 3.0</figcaption></figure>
+        <figure class="ex bad"><video src="static/videos/examples/m1_bad.mp4" poster="static/videos/examples/m1_bad.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">Low</span> Yume 1.5</figcaption></figure>
+      </div>
+    </div>
+    <div class="ex-panel" data-group="action" data-ex="2">
+      <p class="ex-cmd"><b>Command</b> Pan L &amp; R &nbsp;<code>L&rarr;R</code>&nbsp; 40s
+        &nbsp;&middot;&nbsp; <b>Look for</b> whether the motion stays on the yaw axis, or leaks into strafing and forward drift.</p>
+      <div class="ex-pair">
+        <figure class="ex good"><video src="static/videos/examples/m2_good.mp4" poster="static/videos/examples/m2_good.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">High</span> AlayaWorld</figcaption></figure>
+        <figure class="ex bad"><video src="static/videos/examples/m2_bad.mp4" poster="static/videos/examples/m2_bad.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">Low</span> Yume 1.5</figcaption></figure>
+      </div>
+    </div>
+    <div class="ex-panel" data-group="action" data-ex="3">
+      <p class="ex-cmd"><b>Command</b> Strafe Right &nbsp;<code>D</code>&nbsp; 20s
+        &nbsp;&middot;&nbsp; <b>Look for</b> whether motion holds steady, or stutters, stalls, and decays to a standstill while the command still runs.</p>
+      <div class="ex-pair">
+        <figure class="ex good"><video src="static/videos/examples/m3_good.mp4" poster="static/videos/examples/m3_good.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">High</span> Matrix-Game 2.0</figcaption></figure>
+        <figure class="ex bad"><video src="static/videos/examples/m3_bad.mp4" poster="static/videos/examples/m3_bad.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">Low</span> SANA-WM</figcaption></figure>
+      </div>
+    </div>
+    <div class="ex-panel" data-group="action" data-ex="4">
+      <p class="ex-cmd"><b>Command</b> Forth &amp; Back &nbsp;<code>W&rarr;S</code>&nbsp; 40s
+        &nbsp;&middot;&nbsp; <b>Look for</b> how soon the new command takes effect at the 20s switch&mdash;a step, or a ramp that arrives seconds late.</p>
+      <div class="ex-pair">
+        <figure class="ex good"><video src="static/videos/examples/m4_good.mp4" poster="static/videos/examples/m4_good.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">High</span> Matrix-Game 2.0</figcaption></figure>
+        <figure class="ex bad"><video src="static/videos/examples/m4_bad.mp4" poster="static/videos/examples/m4_bad.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">Low</span> SANA-WM</figcaption></figure>
+      </div>
+    </div>
+
+    <h3 class="ex-h">World Memory <span>Does the world it generated stay the same?</span></h3>
+    <div class="ex-tabs" data-group="memory" role="tablist">
+      <button class="ex-tab active" data-group="memory" data-ex="5">Local</button>
+      <button class="ex-tab" data-group="memory" data-ex="6">Revisit</button>
+      <button class="ex-tab" data-group="memory" data-ex="7">Global</button>
+    </div>
+    <div class="ex-panel active" data-group="memory" data-ex="5">
+      <p class="ex-cmd"><b>Command</b> Forward &nbsp;<code>W</code>&nbsp; 20s
+        &nbsp;&middot;&nbsp; <b>Look for</b> flicker, mutation, or an outright cut between adjacent moments.</p>
+      <div class="ex-pair">
+        <figure class="ex good"><video src="static/videos/examples/m5_good.mp4" poster="static/videos/examples/m5_good.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">High</span> HY-GameCraft 1.0</figcaption></figure>
+        <figure class="ex bad"><video src="static/videos/examples/m5_bad.mp4" poster="static/videos/examples/m5_bad.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">Low</span> LingBot-World</figcaption></figure>
+      </div>
+    </div>
+    <div class="ex-panel" data-group="memory" data-ex="6">
+      <p class="ex-cmd"><b>Command</b> Pan L &amp; R &nbsp;<code>L&rarr;R</code>&nbsp; 40s
+        &nbsp;&middot;&nbsp; <b>Look for</b> whether turning back returns you to the view you left, or to somewhere else entirely.</p>
+      <div class="ex-pair">
+        <figure class="ex good"><video src="static/videos/examples/m6_good.mp4" poster="static/videos/examples/m6_good.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">High</span> Lyra 2.0</figcaption></figure>
+        <figure class="ex bad"><video src="static/videos/examples/m6_bad.mp4" poster="static/videos/examples/m6_bad.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">Low</span> Matrix-Game 2.0</figcaption></figure>
+      </div>
+    </div>
+    <div class="ex-panel" data-group="memory" data-ex="7">
+      <p class="ex-cmd"><b>Command</b> Pan L &amp; R &nbsp;<code>L&rarr;R</code>&nbsp; 40s
+        &nbsp;&middot;&nbsp; <b>Look for</b> whether the scene layout survives the full sweep, or its structures rearrange as the camera passes&mdash;invisible in any single pair of frames.</p>
+      <div class="ex-pair">
+        <figure class="ex good"><video src="static/videos/examples/m7_good.mp4" poster="static/videos/examples/m7_good.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">High</span> AlayaWorld</figcaption></figure>
+        <figure class="ex bad"><video src="static/videos/examples/m7_bad.mp4" poster="static/videos/examples/m7_bad.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">Low</span> LingBot-World</figcaption></figure>
+      </div>
+    </div>
+
+    <h3 class="ex-h">Visual Quality <span>How does each frame look?</span></h3>
+    <div class="ex-tabs" data-group="visual" role="tablist">
+      <button class="ex-tab active" data-group="visual" data-ex="8">Perceptual</button>
+      <button class="ex-tab" data-group="visual" data-ex="9">Aesthetic</button>
+    </div>
+    <div class="ex-panel active" data-group="visual" data-ex="8">
+      <p class="ex-cmd"><b>Command</b> Zigzag &nbsp;<code>A&rarr;D&rarr;A</code>&nbsp; 60s
+        &nbsp;&middot;&nbsp; <b>Look for</b> per-frame fidelity: sharpness and detail against haze, clutter, and low-level distortion.</p>
+      <div class="ex-pair">
+        <figure class="ex good"><video src="static/videos/examples/m8_good.mp4" poster="static/videos/examples/m8_good.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">High</span> AlayaWorld</figcaption></figure>
+        <figure class="ex bad"><video src="static/videos/examples/m8_bad.mp4" poster="static/videos/examples/m8_bad.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">Low</span> HY-GameCraft 1.0</figcaption></figure>
+      </div>
+    </div>
+    <div class="ex-panel" data-group="visual" data-ex="9">
+      <p class="ex-cmd"><b>Command</b> Reverse + Pan &nbsp;<code>S&rarr;L</code>&nbsp; 40s
+        &nbsp;&middot;&nbsp; <b>Look for</b> aesthetic appeal: composition, colour, and lighting rather than pixel-level fidelity.</p>
+      <div class="ex-pair">
+        <figure class="ex good"><video src="static/videos/examples/m9_good.mp4" poster="static/videos/examples/m9_good.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">High</span> Yume 1.5</figcaption></figure>
+        <figure class="ex bad"><video src="static/videos/examples/m9_bad.mp4" poster="static/videos/examples/m9_bad.jpg" muted loop playsinline preload="none"></video><figcaption><span class="tag">Low</span> SANA-WM</figcaption></figure>
+      </div>
+    </div>
+
+  </section>
+
   <!-- ── Comparison ── -->
   <section class="wrap" id="comparison">
     <p class="kicker">Why WorldMark</p>
     <h2>The user acts, and the world responds</h2>
 
-    <p class="blist-head">Two obstacles stand in the way of fair evaluation</p>
+    <p class="blist-head">Two obstacles to fair evaluation</p>
     <ul class="blist bad">
-      <li><b>Actions arrive in incompatible formats.</b> Captions, camera trajectories, pose strings, action functions&mdash;no shared protocol exists, so models cannot be driven with identical instructions on identical scenes.</li>
-      <li><b>Action following is collapsed into one number.</b> Existing benchmarks advanced world memory and visual quality, but reduce control to trajectory or direction error&mdash;which shows neither how quickly the world reacts to a command switch, nor how cleanly it moves along the commanded axis.</li>
+      <li><b>Incompatible action formats.</b> Captions, trajectories, pose strings, action functions&mdash;no shared protocol, so no two models get identical instructions.</li>
+      <li><b>Action following collapsed into one number.</b> Trajectory or direction error shows neither how fast the world reacts to a command switch, nor how cleanly it moves along the commanded axis.</li>
     </ul>
 
     <p class="blist-head">How <span class="wm">WorldMark</span> removes them</p>
     <ul class="blist good">
-      <li><b>One vocabulary, ten native interfaces.</b> Per-model adapters translate a shared WASD-style vocabulary into each model's own control format, so ten heterogeneous models receive <strong>semantically identical instructions</strong> across 500 standardized cases spanning styles, viewpoints, and difficulty tiers. A new model costs one adapter.</li>
-      <li><b>Action dynamics through a control-systems lens.</b> An action command is a <em>step input</em>: we measure direction accuracy, direction purity, response latency, and motion stability&mdash;each resolved separately for translation and rotation&mdash;alongside suites for world memory and visual quality.</li>
-      <li><b>Deterministic by construction.</b> Every estimator is feed-forward, so scores are bit-identical across runs: no SLAM bundle-adjustment variance, no sampled VLM judgments.</li>
-      <li><b>Differences existing protocols cannot see.</b> The fastest responders are often the least stable; per-axis resolution reveals models that follow translation almost perfectly while barely responding to rotation; and the model with the best perceptual quality ranks last in translational accuracy and latency.</li>
+      <li><b>One vocabulary, ten native interfaces.</b> Per-model adapters deliver semantically identical instructions across 500 standardized cases. A new model costs one adapter.</li>
+      <li><b>Action as a step response.</b> Direction accuracy, purity, latency, and stability&mdash;each resolved per motion axis&mdash;plus world memory and visual quality.</li>
+      <li><b>Deterministic by construction.</b> Feed-forward estimators only: bit-identical across runs, no SLAM or sampled-VLM variance.</li>
+      <li><b>Differences one score cannot see.</b> The fastest responders are often the least stable, and the best-looking model is among the least responsive.</li>
     </ul>
 
-    <div class="cmp-scroll" style="margin-top: 30px;">
-      <table class="cmp">
-        <thead>
-          <tr>
-            <th>Benchmark</th><th>Tasks</th>
-            <th>Diverse Styles</th><th>Diverse Viewpoints</th><th>Difficulty Hierarchy</th>
-            <th>Action Dynamics</th><th>Revisit Memory</th><th>Full Reproducibility</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>VBench / VBench++</td><td>T2V, I2V</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td></tr>
-          <tr><td>WorldScore</td><td>I2V, I2-3D</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="part">~</td></tr>
-          <tr><td>MIND</td><td>I2V, V2V</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="part">~</td></tr>
-          <tr><td>iWorld-Bench</td><td>Interactive I2V</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="part">~</td><td class="part">~</td></tr>
-          <tr><td>MBench</td><td>T2V, Interactive I2V</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="part">~</td></tr>
-          <tr><td>WBench</td><td>T2V, Interactive I2V</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="part">~</td><td class="part">~</td></tr>
-          <tr class="ours"><td><span class="wm">WorldMark</span> (Ours)</td><td>Interactive I2V</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="tbl-note">
-      <em>Action Dynamics</em> requires response dynamics (latency, persistence, stability) beyond direction or trajectory accuracy.
-      <em>Full Reproducibility</em> means bit-identical outputs across repeated runs&mdash;WorldMark uses feed-forward estimators only, with no SLAM bundle-adjustment variance and no sampled VLM judgments.
-    </p>
   </section>
 
   <!-- ── Benchmark suite ── -->
@@ -765,6 +834,7 @@
     <li><a href="#suite">Benchmark Suite</a></li>
     <li><a href="#metrics">Metrics</a></li>
     <li><a href="#results">Results</a></li>
+    <li><a href="#examples">Qualitative Examples</a></li>
     <li><a href="#findings">Key Findings</a></li>
     <li><a href="#arena">Arena</a></li>
     <li><a href="#bibtex">BibTeX</a></li>
@@ -789,6 +859,48 @@
       }
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
+    })();
+
+    // Qualitative example tabs — only the visible pair is ever loaded/played
+    (function () {
+      var tabs = document.querySelectorAll('.ex-tab');
+      var panels = document.querySelectorAll('.ex-panel');
+      var seen = false;
+
+      function activate(group, key) {
+        tabs.forEach(function (t) {
+          if (t.dataset.group === group) t.classList.toggle('active', t.dataset.ex === key);
+        });
+        panels.forEach(function (p) {
+          if (p.dataset.group !== group) return;
+          var on = p.dataset.ex === key;
+          p.classList.toggle('active', on);
+          p.querySelectorAll('video').forEach(function (v) {
+            if (on) { v.play().catch(function () {}); }
+            else { v.pause(); }
+          });
+        });
+      }
+
+      tabs.forEach(function (t) {
+        t.addEventListener('click', function () { activate(t.dataset.group, t.dataset.ex); });
+      });
+
+      // Play each group's opening pair only once it scrolls into view, and
+      // pause it again on the way out so idle groups cost nothing.
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            var vids = e.target.querySelectorAll('.ex-panel.active video');
+            vids.forEach(function (v) {
+              if (e.isIntersecting) { v.play().catch(function () {}); } else { v.pause(); }
+            });
+          });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('#examples .ex-panel.active').forEach(function (p) {
+          io.observe(p);
+        });
+      }
     })();
 
     // Results tab switcher
