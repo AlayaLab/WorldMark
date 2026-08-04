@@ -5,674 +5,724 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>WorldMark: A Unified Benchmark Suite for Interactive Video World Models</title>
-  <meta name="description" content="WorldMark is the first standardized benchmark for interactive Image-to-Video world models, featuring a unified action-mapping layer, a hierarchical test suite of 500 cases, and a modular evaluation toolkit.">
+  <meta name="description" content="WorldMark drives ten heterogeneous interactive video world models with identical actions through per-model adapters, and characterizes action dynamics, world memory, and visual quality with nine deterministic metrics over 500 standardized cases.">
   <meta name="robots" content="index, follow">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="WorldMark: A Unified Benchmark Suite for Interactive Video World Models">
-  <meta property="og:description" content="The first standardized benchmark for interactive I2V world models with unified action mapping, 500 evaluation cases, and modular metrics.">
-  <meta property="og:image" content="static/images/social_preview.png">
+  <meta property="og:description" content="Ten models, one action vocabulary. Action dynamics, world memory, and visual quality measured with nine deterministic metrics over 500 standardized cases.">
+  <meta property="og:image" content="static/images/teaser.png">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="WorldMark: A Unified Benchmark Suite for Interactive Video World Models">
-  <meta name="twitter:description" content="The first standardized benchmark for interactive I2V world models with unified action mapping, 500 evaluation cases, and modular metrics.">
-  <meta name="twitter:image" content="static/images/social_preview.png">
+  <meta name="twitter:description" content="Ten models, one action vocabulary. Action dynamics, world memory, and visual quality measured with nine deterministic metrics over 500 standardized cases.">
+  <meta name="twitter:image" content="static/images/teaser.png">
 
   <link rel="apple-touch-icon" sizes="180x180" href="static/images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="static/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="static/images/favicon-16x16.png">
   <link rel="icon" type="image/png" href="static/images/favicon.png">
   <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
-  <link rel="stylesheet" href="static/css/bulma.min.css">
-  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
-  <link rel="stylesheet" href="static/css/index.css">
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
 
-  <script defer src="static/js/fontawesome.all.min.js"></script>
-  <script defer src="static/js/bulma-carousel.min.js"></script>
-  <script defer src="static/js/bulma-slider.min.js"></script>
-  <script defer src="static/js/index.js"></script>
+  <style>
+    :root {
+      --ink: #16181f;
+      --ink-soft: #4b5163;
+      --ink-faint: #8a90a3;
+      --accent: #2a039b;
+      --accent-soft: #eeebfa;
+      --line: #e6e8ef;
+      --bg: #ffffff;
+      --bg-alt: #f7f8fb;
+      --ad: #2458d6;   --ad-bg: #eef3fe;
+      --wm: #7c3aed;   --wm-bg: #f4effe;
+      --vq: #0a8a5f;   --vq-bg: #eafaf2;
+      --radius: 14px;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.65;
+      font-size: 16.5px;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; display: block; }
+    .wm { font-family: var(--mono); font-weight: 800; letter-spacing: -0.02em; }
+
+    /* ── Top nav ─────────────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner {
+      max-width: 1180px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; gap: 24px; height: 56px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 800; font-size: 17px; color: var(--ink); }
+    .brand img { height: 26px; }
+    .brand:hover { text-decoration: none; }
+    .topnav { display: flex; gap: 4px; margin-left: auto; overflow-x: auto; }
+    .topnav a {
+      padding: 6px 12px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+      color: var(--ink-soft); white-space: nowrap;
+    }
+    .topnav a:hover { background: var(--bg-alt); color: var(--ink); text-decoration: none; }
+    .topnav a.arena { color: #fff; background: linear-gradient(120deg, #5b2ee5, #9333ea); }
+    .topnav a.arena:hover { filter: brightness(1.1); }
+    @media (max-width: 760px) { .topnav a:not(.arena) { display: none; } }
+
+    /* ── Layout ──────────────────────────────── */
+    .wrap { max-width: 1020px; margin: 0 auto; padding: 0 24px; }
+    .wrap-wide { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 44px 0 12px; }
+    .kicker {
+      font-size: 12.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 6px;
+    }
+    h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 16px; }
+    h3 { font-size: 20px; font-weight: 700; margin: 26px 0 10px; }
+    p + p { margin-top: 12px; }
+    .muted { color: var(--ink-soft); }
+    figure { margin: 26px 0 8px; }
+    figcaption { font-size: 13.5px; color: var(--ink-faint); margin-top: 10px; text-align: center; line-height: 1.55; }
+    .figframe { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #fff; }
+
+    /* ── Hero ────────────────────────────────── */
+    .hero { text-align: center; padding: 64px 0 30px; }
+    .hero h1 {
+      font-size: clamp(30px, 4.6vw, 46px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.16;
+      max-width: 900px; margin: 0 auto 26px;
+    }
+    .hero h1 .wm { color: var(--accent); }
+    .authors { font-size: 17px; line-height: 2; max-width: 760px; margin: 0 auto; }
+    .authors span { white-space: nowrap; margin: 0 8px; }
+    .authors sup { color: var(--ink-faint); font-size: 11px; }
+    .affils { margin-top: 10px; font-size: 14.5px; color: var(--ink-soft); }
+    .affils sup { font-size: 10px; }
+    .corr { margin-top: 6px; font-size: 13px; color: var(--ink-faint); }
+    .logos { display: flex; justify-content: center; align-items: center; gap: 44px; flex-wrap: wrap; margin-top: 28px; }
+    .logos img { height: 52px; object-fit: contain; }
+    .btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px; border-radius: 999px; font-weight: 700; font-size: 15px;
+      background: var(--ink); color: #fff; transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover { text-decoration: none; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(20,22,31,.18); }
+    .btn svg { width: 17px; height: 17px; fill: currentColor; }
+    .btn.arena { background: linear-gradient(120deg, #5b2ee5, #9333ea, #d946ef); }
+
+    /* ── Stats strip ─────────────────────────── */
+    .stats { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 44px auto 0; max-width: 900px; }
+    .stat {
+      flex: 1 1 150px; padding: 18px 10px; text-align: center;
+      background: var(--bg-alt); border-radius: var(--radius);
+    }
+    .stat b { display: block; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); }
+    .stat span { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+
+    /* ── Comparison table ────────────────────── */
+    .cmp-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+    table.cmp { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 720px; }
+    .cmp th, .cmp td { padding: 10px 14px; text-align: center; border-bottom: 1px solid var(--line); }
+    .cmp thead th { background: var(--bg-alt); font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
+    .cmp td:first-child, .cmp th:first-child { text-align: left; font-weight: 600; }
+    .cmp tr.ours { background: var(--accent-soft); font-weight: 700; }
+    .cmp tr:last-child td { border-bottom: none; }
+    .yes { color: #0a8a5f; font-weight: 800; }
+    .no  { color: #d43c3c; font-weight: 800; }
+    .part{ color: #d97706; font-weight: 800; }
+
+    /* ── Metric cards ────────────────────────── */
+    .cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+    @media (max-width: 860px) { .cards3 { grid-template-columns: 1fr; } }
+    .mcard { border: 1px solid var(--line); border-top: 4px solid var(--c, var(--accent)); border-radius: var(--radius); padding: 20px 22px; background: #fff; }
+    .mcard.ad { --c: var(--ad); }  .mcard.wm-c { --c: var(--wm); }  .mcard.vq { --c: var(--vq); }
+    .mcard h4 { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+    .mcard .q { font-size: 13.5px; color: var(--ink-faint); font-style: italic; margin-bottom: 12px; }
+    .mcard ul { list-style: none; }
+    .mcard li { padding: 7px 0; border-top: 1px dashed var(--line); font-size: 14px; color: var(--ink-soft); }
+    .mcard li b { color: var(--ink); font-weight: 700; }
+    .mcard li:first-child { border-top: none; }
+    .pill { display: inline-block; font-size: 10.5px; font-weight: 800; letter-spacing: .04em; padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: 1px; }
+    .pill.ad { background: var(--ad-bg); color: var(--ad); }
+
+    /* ── Tier cards ──────────────────────────── */
+    .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0; }
+    @media (max-width: 760px) { .tiers { grid-template-columns: 1fr; } }
+    .tier { border-radius: var(--radius); padding: 16px 18px; font-size: 14px; }
+    .tier b { display: block; font-size: 15px; margin-bottom: 4px; }
+    .tier.easy { background: #eef3fe; } .tier.easy b { color: #2458d6; }
+    .tier.med  { background: #fdf3e3; } .tier.med b { color: #c2660a; }
+    .tier.hard { background: #fdeaf2; } .tier.hard b { color: #d6336c; }
+
+    /* ── Interface paths ─────────────────────── */
+    .paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+    @media (max-width: 760px) { .paths { grid-template-columns: 1fr; } }
+    .path { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; background: var(--bg-alt); font-size: 14px; color: var(--ink-soft); }
+    .path b { display: block; color: var(--ink); margin-bottom: 4px; font-size: 14.5px; }
+    .keys { display: flex; gap: 6px; justify-content: center; margin: 18px 0 6px; flex-wrap: wrap; }
+    .key {
+      font-family: var(--mono); font-weight: 800; font-size: 15px;
+      width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
+      border: 1.5px solid var(--ink); border-bottom-width: 4px; border-radius: 9px; background: #fff;
+    }
+    .key.rot { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Results tables ──────────────────────── */
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0 16px; }
+    .tab {
+      padding: 8px 18px; border-radius: 999px; font-size: 14px; font-weight: 700;
+      border: 1.5px solid var(--line); background: #fff; color: var(--ink-soft); cursor: pointer;
+      transition: all .12s ease;
+    }
+    .tab:hover { border-color: var(--ink-faint); }
+    .tab.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .rtable { display: none; }
+    .rtable.active { display: block; }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+    .rtable table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; min-width: 980px; }
+    .rtable th, .rtable td { padding: 7px 9px; text-align: center; border-bottom: 1px solid var(--line); }
+    .rtable thead th { background: var(--bg-alt); font-weight: 700; }
+    .rtable th.grp { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; border-bottom: 2px solid; }
+    .rtable th.grp-ad { color: var(--ad); border-color: var(--ad); background: var(--ad-bg); }
+    .rtable th.grp-wm { color: var(--wm); border-color: var(--wm); background: var(--wm-bg); }
+    .rtable th.grp-vq { color: var(--vq); border-color: var(--vq); background: var(--vq-bg); }
+    .rtable th.sub { font-size: 12px; line-height: 1.3; }
+    .rtable th.axis { font-size: 11px; color: var(--ink-faint); font-weight: 600; }
+    .rtable td.model-col, .rtable th.model-col {
+      text-align: left; font-weight: 600; position: sticky; left: 0;
+      background: #fff; border-right: 1px solid var(--line); min-width: 138px;
+    }
+    .rtable thead th.model-col { background: var(--bg-alt); z-index: 2; }
+    .rtable tbody tr:hover td { background: #fafbfe; }
+    .rtable tbody tr:hover td.model-col { background: #f2f4fa; }
+    .rtable td.best { font-weight: 800; color: var(--accent); }
+    .rtable td.second { text-decoration: underline; text-decoration-color: var(--ink-faint); text-underline-offset: 3px; }
+    .tbl-note { font-size: 13px; color: var(--ink-faint); margin-top: 10px; }
+
+    /* ── Findings ────────────────────────────── */
+    .findings { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+    @media (max-width: 760px) { .findings { grid-template-columns: 1fr; } }
+    .finding {
+      border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px;
+      background: #fff; font-size: 14.5px; color: var(--ink-soft);
+    }
+    .finding .num {
+      font-family: var(--mono); font-weight: 800; font-size: 13px; color: var(--accent);
+      display: inline-block; background: var(--accent-soft); border-radius: 6px; padding: 1px 8px; margin-bottom: 8px;
+    }
+    .finding b { display: block; color: var(--ink); font-size: 15.5px; margin-bottom: 5px; }
+
+    /* ── Arena CTA ───────────────────────────── */
+    .arena-cta {
+      margin: 40px 0 8px; border-radius: 20px; padding: 40px 32px; text-align: center; color: #fff;
+      background: linear-gradient(120deg, #1c0f4b, #5b2ee5 55%, #9333ea);
+    }
+    .arena-cta h2 { color: #fff; margin-bottom: 8px; }
+    .arena-cta p { max-width: 620px; margin: 0 auto 20px; color: rgba(255,255,255,.85); font-size: 15.5px; }
+    .arena-cta .btn { background: #fff; color: var(--accent); }
+
+    /* ── BibTeX / footer ─────────────────────── */
+    .bib-box { position: relative; background: #14161f; border-radius: var(--radius); padding: 22px 24px; overflow-x: auto; }
+    .bib-box pre { font-family: var(--mono); font-size: 13px; line-height: 1.7; color: #d7dae4; font-weight: 600; }
+    .copy-btn {
+      position: absolute; top: 12px; right: 12px; padding: 5px 14px; font-size: 12.5px; font-weight: 700;
+      border: 1px solid rgba(255,255,255,.25); border-radius: 8px; background: transparent; color: #d7dae4; cursor: pointer;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,.1); }
+    footer { border-top: 1px solid var(--line); margin-top: 60px; padding: 28px 0 40px; text-align: center; font-size: 13px; color: var(--ink-faint); }
+    footer img { height: 30px; margin: 0 auto 10px; opacity: .8; }
+  </style>
 </head>
 <body>
 
-  <main class="section">
-    <div class="container is-max-desktop">
-      <div class="content has-text-centered">
-        <h1 class="title is-2" style="margin-bottom: 0.5rem;">
-          <span style="font-family: 'Courier New', monospace; font-weight: 800;">WorldMark</span>: A Unified Benchmark Suite for Interactive Video World Models
-        </h1>
-
-        <p class="is-size-5" style="margin-bottom: 0.25rem;">
-          Xiaojie Xu<sup>1</sup>,
-          Zhengyuan Lin<sup>1,2</sup>,
-          Kang He<sup>1,3</sup>,
-          Yukang Feng<sup>1,3</sup>
-        </p>
-        <p class="is-size-5">
-          Xiaofeng Mao<sup>1</sup>,
-          Yuanyang Yin<sup>1,3</sup>,
-          Kaipeng Zhang<sup>1,3,&dagger;</sup>,
-          Yongtao Ge<sup>1,&dagger;</sup>
-        </p>
-
-        <p class="is-size-6 has-text-grey">
-          <sup>1</sup>Alaya Studio, Shanda AI Research Tokyo,
-          <sup>2</sup>The University of Tokyo,
-          <sup>3</sup>Shanghai Innovation Institute
-        </p>
-        <p class="is-size-6 has-text-grey" style="margin-top: 0.25rem;">
-          <sup>&dagger;</sup>Corresponding authors:
-          <a href="mailto:kaipeng.zhang@shanda.com">kaipeng.zhang@shanda.com</a>,
-          <a href="mailto:yongtao.ge@shanda.com">yongtao.ge@shanda.com</a>
-        </p>
-
-        <div class="affiliation-logos" style="display: flex; justify-content: center; align-items: center; gap: 3rem; margin-top: 1.5rem; flex-wrap: wrap;">
-          <img src="static/images/alaya.png" alt="Alaya Lab" class="logo-alaya" style="height: 60px; object-fit: contain;">
-          <img src="static/images/utokyo.png" alt="The University of Tokyo" style="height: 60px; object-fit: contain;">
-          <img src="static/images/sii.svg" alt="Shanghai Innovation Institute" style="height: 60px; object-fit: contain;">
-        </div>
-
-        <p class="buttons is-centered" style="margin-top: 1.5rem;">
-          <a class="button is-dark" href="https://arxiv.org/abs/2604.21686" target="_blank" rel="noopener">
-            <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span>
-          </a>
-          <a class="button is-dark" href="#" target="_blank" rel="noopener">
-            <span class="icon"><i class="fab fa-github"></i></span><span>Code & Data</span>
-          </a>
-          <a class="button arena-btn" href="https://warena.ai/" target="_blank" rel="noopener">
-            <span class="icon"><i class="fas fa-users"></i></span><span>World Model Arena</span>
-          </a>
-        </p>
+  <!-- ── Top nav ── -->
+  <nav class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top"><img src="static/images/favicon.png" alt="">WorldMark</a>
+      <div class="topnav">
+        <a href="#abstract">Abstract</a>
+        <a href="#comparison">Why WorldMark</a>
+        <a href="#suite">Benchmark</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#results">Results</a>
+        <a href="#findings">Findings</a>
+        <a href="#bibtex">BibTeX</a>
+        <a class="arena" href="https://warena.ai/" target="_blank" rel="noopener">⚔ Arena</a>
       </div>
+    </div>
+  </nav>
 
-      <hr>
+  <!-- ── Hero ── -->
+  <header class="hero wrap" id="top">
+    <h1><span class="wm">WorldMark</span>: A Unified Benchmark Suite for Interactive Video World Models</h1>
 
-      <!-- Abstract -->
-      <section class="section pt-0" id="abstract">
-        <div class="content">
-          <h2 class="title is-3">Abstract</h2>
-          <p>
-            Interactive video generation models&mdash;Genie, YUME, HY-World, Matrix-Game, among others&mdash;are advancing rapidly, yet every model is evaluated on its own proprietary benchmark with bespoke scenes and trajectories, making fair cross-model comparison impossible. Existing public benchmarks offer useful metrics such as trajectory error, aesthetic scores, and VLM-based judgments, but none supplies the <strong>standardized test conditions</strong>&mdash;identical scenes, identical action sequences, and a unified control interface&mdash;needed to make those metrics comparable across models with heterogeneous inputs.
-          </p>
-          <p>
-            We introduce <strong style="font-family: 'Courier New', monospace;">WorldMark</strong>, the first benchmark that provides such a common playing field for interactive Image-to-Video world models. <strong style="font-family: 'Courier New', monospace;">WorldMark</strong> contributes:
-            <strong>(1) a unified action-mapping layer</strong> that translates a shared WASD-style action vocabulary into each model's native control format, enabling apples-to-apples comparison across six major models on identical scenes and trajectories;
-            <strong>(2) a hierarchical test suite</strong> of 500 evaluation cases covering first- and third-person viewpoints, photorealistic and stylized scenes, and three difficulty tiers from Easy to Hard spanning 20&ndash;60s; and
-            <strong>(3) a modular evaluation toolkit</strong> for Visual Quality, Control Alignment, and World Consistency, designed so that researchers can reuse our standardized inputs while plugging in their own metrics as the field evolves.
-            We release all data, evaluation code, and model outputs to facilitate future research.
-          </p>
-        </div>
-      </section>
+    <p class="authors">
+      <span>Xiaojie Xu<sup>1,2</sup></span>
+      <span>Zhengyuan Lin<sup>1,2</sup></span>
+      <span>Kang He<sup>1,3</sup></span>
+      <span>Yukang Feng<sup>1,3</sup></span>
+      <span>Xiaofeng Mao<sup>1</sup></span>
+      <span>Yuanyang Yin<sup>1,3</sup></span>
+      <span>Yongtao Ge<sup>1,&dagger;</sup></span>
+      <span>Kaipeng Zhang<sup>1,3,&dagger;</sup></span>
+    </p>
 
-      <!-- Introduction Video placeholder -->
-      <section class="section pt-0" id="video">
-        <div class="content">
-          <h2 class="title is-3">Introduction Video</h2>
-          <div style="border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-xl);">
-            <video width="100%" controls preload="metadata" poster="">
-              <source src="static/videos/intro.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
-      </section>
+    <p class="affils">
+      <sup>1</sup>Alaya Lab &nbsp;&nbsp; <sup>2</sup>The University of Tokyo &nbsp;&nbsp; <sup>3</sup>Shanghai Innovation Institute
+    </p>
+    <p class="corr">
+      <sup>&dagger;</sup>Corresponding authors:
+      <a href="mailto:yongtao.ge@shanda.com">yongtao.ge@shanda.com</a>,
+      <a href="mailto:kaipeng.zhang@shanda.com">kaipeng.zhang@shanda.com</a>
+    </p>
 
-      <!-- Overview -->
-      <section class="section pt-0" id="overview">
-        <div class="content">
-          <h2 class="title is-3">Overview</h2>
-          <p>
-            Current interactive world models each define their own control interfaces, scenes, and evaluation protocols, making cross-model comparison impossible. <strong style="font-family: 'Courier New', monospace;">WorldMark</strong> resolves this fragmentation through three pillars: <strong>(a)</strong> A curated test suite of 500 cases spanning first- and third-person views with photorealistic and stylized scenes. <strong>(b)</strong> A unified action-mapping layer translating a shared WASD vocabulary into each model's native format. <strong>(c)</strong> Same reference image + same action sequence reveals striking quality divergence across models.
-          </p>
-          <figure class="image" style="margin: 2rem auto; max-width: 900px;">
-            <img src="static/images/teaser.png" alt="Overview of WorldMark: diverse scenes, unified action mapping, and cross-model comparison" loading="lazy" style="border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); width: 100%;">
-          </figure>
-        </div>
-      </section>
+    <div class="logos">
+      <img src="static/images/alaya.png" alt="Alaya Lab" class="logo-alaya">
+      <img src="static/images/utokyo.png" alt="The University of Tokyo">
+      <img src="static/images/sii.svg" alt="Shanghai Innovation Institute">
+    </div>
 
-      <!-- Benchmark Comparison Table -->
-      <section class="section pt-0" id="comparison">
-        <div class="content">
-          <h2 class="title is-3">Why WorldMark?</h2>
-          <p>Existing benchmarks lack standardized scenes, unified cross-model action mapping, keyboard-interactive support, or difficulty hierarchies. <strong style="font-family: 'Courier New', monospace;">WorldMark</strong> is the first to provide all of these.</p>
+    <div class="btns">
+      <a class="btn" href="https://arxiv.org/abs/2604.21686" target="_blank" rel="noopener">
+        <svg viewBox="0 0 384 512"><path d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM155 273.4l48 56 48-56c8.6-10.1 23.8-11.2 33.8-2.6s11.2 23.8 2.6 33.8L235.6 366l51.9 60.5c8.6 10.1 7.5 25.2-2.6 33.8s-25.2 7.5-33.8-2.6l-48-56-48 56c-8.6 10.1-23.8 11.2-33.8 2.6s-11.2-23.8-2.6-33.8L170.4 366l-51.9-60.5c-8.6-10.1-7.5-25.2 2.6-33.8s25.2-7.5 33.8 2.6z"/></svg>
+        Paper
+      </a>
+      <a class="btn" href="https://github.com/AlayaLab/WorldMark" target="_blank" rel="noopener">
+        <svg viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8z"/></svg>
+        Code &amp; Data
+      </a>
+      <a class="btn arena" href="https://warena.ai/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 512 512"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32z"/></svg>
+        World Model Arena
+      </a>
+    </div>
 
-          <div class="table-container" style="margin-top: 1.5rem;">
-            <table class="table is-bordered is-striped is-hoverable is-fullwidth">
-              <thead>
-                <tr>
-                  <th>Benchmark</th>
-                  <th>Target Task</th>
-                  <th>Std. Scenes & Actions</th>
-                  <th>Unified Cross-Model</th>
-                  <th>Keyboard Interactive</th>
-                  <th>Difficulty Hierarchy</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>VBench</td>
-                  <td>T2V</td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                </tr>
-                <tr>
-                  <td>VBench++</td>
-                  <td>I2V</td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                </tr>
-                <tr>
-                  <td>WorldScore</td>
-                  <td>Traj cond. I2V/I2-3D</td>
-                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
-                  <td>~</td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                </tr>
-                <tr>
-                  <td>MIND</td>
-                  <td>Traj cond. I2V/V2V</td>
-                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
-                  <td>~</td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                  <td><span class="has-text-danger"><i class="fas fa-times"></i></span></td>
-                </tr>
-                <tr style="background: #eef6ff; font-weight: 600;">
-                  <td><span style="font-family: 'Courier New', monospace;">WorldMark</span> (Ours)</td>
-                  <td>Interactive I2V</td>
-                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
-                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
-                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
-                  <td><span class="has-text-success"><i class="fas fa-check"></i></span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+    <div class="stats">
+      <div class="stat"><b>10</b><span>Models Evaluated</span></div>
+      <div class="stat"><b>500</b><span>Standardized Cases</span></div>
+      <div class="stat"><b>9</b><span>Deterministic Metrics</span></div>
+    </div>
+  </header>
 
-      <!-- Image Suite -->
-      <section class="section pt-0" id="image-suite">
-        <div class="content">
-          <h2 class="title is-3">Image Suite</h2>
-          <p>
-            50 diverse reference images spanning three scene categories (<strong>Nature</strong>, <strong>City</strong>, <strong>Indoor</strong>), two visual styles (<strong>Real</strong>, <strong>Stylized</strong>), and two viewpoints (<strong>First-person</strong>, <strong>Third-person</strong>). The stylized subset covers oil painting, Ukiyo-e, cyberpunk, and Minecraft aesthetics, ensuring evaluation is not biased toward photorealistic domains alone. Cross-viewpoint pairs yield <strong>100 test images</strong> total.
-          </p>
-          <figure class="image" style="margin: 2rem auto; max-width: 900px;">
-            <img src="static/images/image_suite.png" alt="Image Suite overview showing diverse scenes and styles across Indoor, City, Nature categories in Real and Stylized variants" loading="lazy" style="border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); width: 100%;">
-            <figcaption class="has-text-centered has-text-grey is-size-7" style="margin-top: 0.75rem;"><strong>Fig. 2:</strong> Overview of the Image Suite. Diverse scenes and styles are covered, each shown in first-person and generated third-person views.</figcaption>
-          </figure>
-        </div>
-      </section>
+  <!-- ── Teaser ── -->
+  <section class="wrap" id="overview" style="padding-top: 28px;">
+    <figure>
+      <div class="figframe"><img src="static/images/teaser.png" alt="WorldMark overview: per-model adapters translate one shared action vocabulary into each model's native control format; a round-trip probe compares outbound and return views at equal accumulated motion."></div>
+      <figcaption>
+        Models take actions in incompatible formats&mdash;keyboard actions, text prompts, camera trajectories&mdash;so per-model adapters translate one shared vocabulary into each native format.
+        For a frame on the outbound leg and its return-leg counterpart at equal accumulated motion, the two views should match but diverge to different degrees.
+      </figcaption>
+    </figure>
+  </section>
 
-      <!-- Action Suite -->
-      <section class="section pt-0" id="action-suite">
-        <div class="content">
-          <h2 class="title is-3">Action Suite</h2>
-          <p>
-            15 standardized action sequences of increasing complexity, expressed in a shared vocabulary of <strong>WASD movement</strong> plus <strong>L/R yaw rotation</strong>:
-          </p>
-          <div class="columns is-multiline" style="margin-top: 1rem;">
-            <div class="column is-4">
-              <div class="notification" style="background: #eff6ff; border-radius: var(--border-radius);">
-                <p class="title is-6" style="color: #2563eb;">Easy (20s, single-segment)</p>
-                <p class="is-size-7">Pure forward motion, basic action compliance. Actions 1&ndash;5: Forward, Backward, Strafe Left, Strafe Right, Pan Right.</p>
-              </div>
-            </div>
-            <div class="column is-4">
-              <div class="notification" style="background: #fef3c7; border-radius: var(--border-radius);">
-                <p class="title is-6" style="color: #d97706;">Medium (40s, two-segment)</p>
-                <p class="is-size-7">Smooth transitions between movement types. Actions 6&ndash;10: Forth & Back, Pan L & R, Strafe L & R, Walk+Pan, Reverse+Pan.</p>
-              </div>
-            </div>
-            <div class="column is-4">
-              <div class="notification" style="background: #fce7f3; border-radius: var(--border-radius);">
-                <p class="title is-6" style="color: #db2777;">Hard (60s, three-segment)</p>
-                <p class="is-size-7">Complex patrol routes and 360&deg; panoramic rotations. Actions 11&ndash;15: Patrol, Sweep, Right Turn, Zigzag, Peek+Retract.</p>
-              </div>
-            </div>
-          </div>
-          <figure class="image" style="margin: 2rem auto; max-width: 800px;">
-            <img src="static/images/trajectories_3d.png" alt="The 15 standardized action sequences from elementary translations to combined and cyclic trajectories" loading="lazy" style="border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); width: 100%;">
-            <figcaption class="has-text-centered has-text-grey is-size-7" style="margin-top: 0.75rem;"><strong>Fig. 3:</strong> The 15 standardized action sequences, ranging from elementary translations and rotations to combined and cyclic trajectories.</figcaption>
-          </figure>
+  <!-- ── Abstract ── -->
+  <section class="wrap" id="abstract">
+    <p class="kicker">Abstract</p>
+    <h2>The user acts, and the world responds</h2>
+    <p>
+      Unlike text- or image-driven video generation, an interactive world model is driven by <em>actions</em>. Two obstacles stand in the way of fair and comprehensive evaluation.
+      First, models take actions in incompatible formats&mdash;captions, camera trajectories, action functions&mdash;so no shared protocol has been established.
+      Second, while existing benchmarks have advanced world memory and visual quality, action following is reduced to trajectory or direction error, which collapses a whole path into one number:
+      not how quickly the world reacts to a command switch, nor how cleanly it moves along the commanded axis.
+    </p>
+    <p>
+      <span class="wm">WorldMark</span> removes both obstacles. Per-model adapters translate a shared WASD-style vocabulary into each model's native control format,
+      so <strong>ten heterogeneous models receive semantically identical instructions</strong> across 500 standardized cases spanning styles, viewpoints, and difficulty tiers; a new model costs one adapter.
+      On this common ground we characterize action dynamics through a <strong>control-systems lens</strong>&mdash;direction accuracy, direction purity, response latency, and motion stability, each resolved per axis&mdash;alongside suites for world memory and visual quality.
+      Together they expose differences existing protocols cannot see: the fastest responders are often the least stable; per-axis resolution reveals models that follow translation almost perfectly while barely responding to rotation;
+      and the model with the best perceptual quality ranks last in translational direction accuracy and latency. We release all data, evaluation code, and model outputs.
+    </p>
+  </section>
 
-          <p>Combined with 100 test images, this yields approximately <strong>500 standardized evaluation cases</strong>. A VLM-based scene-aware filtering step ensures only physically plausible actions are assigned to each image.</p>
+  <!-- ── Comparison ── -->
+  <section class="wrap" id="comparison">
+    <p class="kicker">Why WorldMark</p>
+    <h2>What existing benchmarks cannot measure</h2>
+    <p class="muted">
+      Visual quality and memory are well served; action following is not. Prior protocols report a single direction or trajectory score,
+      which cannot in principle capture <em>response dynamics</em>&mdash;latency, persistence, stability&mdash;and none is fully reproducible run-to-run.
+    </p>
+    <div class="cmp-scroll" style="margin-top: 20px;">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th>Benchmark</th><th>Tasks</th>
+            <th>Diverse Styles</th><th>Diverse Viewpoints</th><th>Difficulty Hierarchy</th>
+            <th>Action Dynamics</th><th>Revisit Memory</th><th>Full Reproducibility</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>VBench / VBench++</td><td>T2V, I2V</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td></tr>
+          <tr><td>WorldScore</td><td>I2V, I2-3D</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="part">~</td></tr>
+          <tr><td>MIND</td><td>I2V, V2V</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="part">~</td></tr>
+          <tr><td>iWorld-Bench</td><td>Interactive I2V</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="part">~</td><td class="part">~</td></tr>
+          <tr><td>MBench</td><td>T2V, Interactive I2V</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="part">~</td></tr>
+          <tr><td>WBench</td><td>T2V, Interactive I2V</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td><td class="part">~</td><td class="part">~</td></tr>
+          <tr class="ours"><td><span class="wm">WorldMark</span> (Ours)</td><td>Interactive I2V</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-note">
+      <em>Action Dynamics</em> requires response dynamics (latency, persistence, stability) beyond direction or trajectory accuracy.
+      <em>Full Reproducibility</em> means bit-identical outputs across repeated runs&mdash;WorldMark uses feed-forward estimators only, with no SLAM bundle-adjustment variance and no sampled VLM judgments.
+    </p>
+  </section>
 
-          <figure class="image" style="margin: 2rem auto;">
-            <img src="static/images/vlm_traj.png" alt="Context-aware action selection using VLM reasoning" loading="lazy" style="border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); width: 100%;">
-            <figcaption class="has-text-centered has-text-grey is-size-7" style="margin-top: 0.75rem;"><strong>Fig. 4:</strong> Context-aware action selection. A VLM analyzes the initial image to identify physical constraints and selects plausible action sequences from the predefined library.</figcaption>
-          </figure>
-        </div>
-      </section>
+  <!-- ── Benchmark suite ── -->
+  <section class="wrap" id="suite">
+    <p class="kicker">Benchmark Suite</p>
+    <h2>One vocabulary, ten native interfaces, 500 cases</h2>
 
-      <!-- Quantitative Results -->
-      <section class="section pt-0" id="results">
-        <div class="content">
-          <h2 class="title is-3">Quantitative Results</h2>
+    <div class="keys">
+      <span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span>
+      <span class="key rot">L</span><span class="key rot">R</span>
+    </div>
+    <p class="muted" style="text-align:center; font-size: 14px;">
+      Six primitives&mdash;forward, backward, strafe left/right, yaw left/right&mdash;each parameterized by duration, compose all 15 trajectories.
+    </p>
 
-          <!-- Evaluation Dimensions -->
-          <p><strong style="font-family: 'Courier New', monospace;">WorldMark</strong> evaluates generated videos along three complementary dimensions with eight metrics:</p>
+    <h3>Unified Action Interface</h3>
+    <p>
+      Models differ in <em>what they accept</em>&mdash;key presses, keyboard&ndash;mouse vectors, pose strings, camera trajectories, or directional keywords in a caption&mdash;and
+      in <em>how they internalize it</em>: Pl&uuml;cker ray maps, PRoPE, cross-attention modules, or AdaLN-injected poses.
+      A per-model <strong>action-mapping adapter</strong> lowers the shared vocabulary into the native format along three paths:
+    </p>
+    <div class="paths">
+      <div class="path"><b>Native keyboard</b>Models with a keyboard interface take the primitives directly.<br><span style="font-size:12.5px;">Matrix-Game 3.0, DreamX-World, &hellip;</span></div>
+      <div class="path"><b>Caption injection</b>Text-driven models take motion types and durations written into the caption.<br><span style="font-size:12.5px;">Yume 1.5, HY-GameCraft 1.0, &hellip;</span></div>
+      <div class="path"><b>Trajectory lowering</b>Camera-controlled models take a per-frame unified trajectory integrated from the primitives.<br><span style="font-size:12.5px;">HY-World 1.5, Lyra 2.0, &hellip;</span></div>
+    </div>
+    <p style="margin-top: 14px;">
+      Each model keeps its <strong>native step size and yaw rate</strong>: with units this incommensurable, calibrating to a common scale would only substitute our assumptions for the model's own.
+      All metrics are therefore scale-free by construction. Adding a model costs exactly one adapter.
+    </p>
 
-          <div class="columns is-multiline" style="margin-top: 1.5rem; margin-bottom: 2rem;">
-            <div class="column is-4">
-              <div class="card" style="height: 100%; border-radius: var(--border-radius-lg); border-left: 4px solid #3b82f6;">
-                <div class="card-content">
-                  <p class="title is-5">Visual Quality</p>
-                  <ul style="margin-top: 0.5rem;">
-                    <li><strong>Aesthetic Quality</strong> &mdash; human-perceived aesthetic appeal via LAION aesthetic predictor</li>
-                    <li><strong>Imaging Quality</strong> &mdash; low-level distortion detection via MUSIQ</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="column is-4">
-              <div class="card" style="height: 100%; border-radius: var(--border-radius-lg); border-left: 4px solid #10b981;">
-                <div class="card-content">
-                  <p class="title is-5">Control Alignment</p>
-                  <ul style="margin-top: 0.5rem;">
-                    <li><strong>Translation Error</strong> &mdash; 3D camera pose via DROID-SLAM reconstruction</li>
-                    <li><strong>Rotation Error</strong> &mdash; geodesic angular deviation of heading</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="column is-4">
-              <div class="card" style="height: 100%; border-radius: var(--border-radius-lg); border-left: 4px solid #8b5cf6;">
-                <div class="card-content">
-                  <p class="title is-5">World Consistency</p>
-                  <ul style="margin-top: 0.5rem;">
-                    <li><strong>Reprojection Error</strong> &mdash; 3D spatial coherence via DROID-SLAM + DBA</li>
-                    <li><strong>State Consistency</strong> &mdash; spatiotemporal object stability</li>
-                    <li><strong>Content Consistency</strong> &mdash; hallucination detection</li>
-                    <li><strong>Style Consistency</strong> &mdash; global visual uniformity</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
+    <h3>Image Suite &mdash; 50 scenes &times; 2 viewpoints</h3>
+    <p>
+      25 photorealistic and 25 stylized references drawn from the WorldScore pool of 1000 per domain, deduplicated to preserve its semantic diversity at a fortieth of its size.
+      Each first-person reference is paired with a synthesized third-person view, giving 100 test images across three scene categories (Nature, City, Indoor)
+      and styles from oil painting and Ukiyo-e to Minecraft.
+    </p>
+    <figure>
+      <div class="figframe"><img src="static/images/image_suite.jpg" alt="Image Suite overview: diverse scenes and styles in first- and third-person views" loading="lazy"></div>
+      <figcaption>Overview of the Image Suite. Diverse scenes and styles, shown in first- and third-person views.</figcaption>
+    </figure>
 
-          <!-- First-Person Real -->
-          <h3 class="title is-4" style="margin-top: 2rem;">First-Person Real</h3>
-          <div class="table-container">
-            <table class="table is-bordered is-striped is-hoverable is-fullwidth is-size-7">
-              <thead>
-                <tr>
-                  <th>Metric</th>
-                  <th>YUME 1.5</th>
-                  <th>MatrixGame 2.0</th>
-                  <th>HY-World</th>
-                  <th>HY-Game</th>
-                  <th>Oasis</th>
-                  <th>Genie 3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td colspan="7" style="background: #f0f4ff; font-weight: 700; font-style: italic;">Visual Quality</td></tr>
-                <tr>
-                  <td>Aesthetic Quality &uarr;</td>
-                  <td><strong>56.94</strong></td><td>49.40</td><td><u>54.79</u></td><td>46.59</td><td>29.31</td><td>45.58</td>
-                </tr>
-                <tr>
-                  <td>Imaging Quality &uarr;</td>
-                  <td><strong>74.36</strong></td><td>68.11</td><td><u>69.37</u></td><td>49.31</td><td>28.08</td><td>64.14</td>
-                </tr>
-                <tr><td colspan="7" style="background: #f0fff4; font-weight: 700; font-style: italic;">Control Alignment</td></tr>
-                <tr>
-                  <td>Translation Error &darr;</td>
-                  <td>0.199</td><td>0.222</td><td><u>0.191</u></td><td><strong>0.159</strong></td><td>0.376</td><td>0.498</td>
-                </tr>
-                <tr>
-                  <td>Rotation Error &darr;</td>
-                  <td>2.107</td><td><strong>1.324</strong></td><td><u>2.079</u></td><td>6.019</td><td>4.892</td><td>4.247</td>
-                </tr>
-                <tr><td colspan="7" style="background: #f5f0ff; font-weight: 700; font-style: italic;">World Consistency</td></tr>
-                <tr>
-                  <td>Reprojection Error &darr;</td>
-                  <td>0.549</td><td>0.688</td><td>0.702</td><td><u>0.447</u></td><td>1.938</td><td><strong>0.441</strong></td>
-                </tr>
-                <tr>
-                  <td>State Consistency &uarr;</td>
-                  <td>5.344</td><td>4.151</td><td><u>5.913</u></td><td>4.073</td><td>2.585</td><td><strong>6.416</strong></td>
-                </tr>
-                <tr>
-                  <td>Content Consistency &uarr;</td>
-                  <td>3.820</td><td><u>7.415</u></td><td>6.352</td><td>5.814</td><td>3.748</td><td><strong>6.914</strong></td>
-                </tr>
-                <tr>
-                  <td>Style Consistency &uarr;</td>
-                  <td><u>7.119</u></td><td>3.181</td><td>5.142</td><td>3.726</td><td>1.797</td><td><strong>8.158</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+    <h3>Action Suite &mdash; 15 trajectories, 3 functional tiers</h3>
+    <div class="tiers">
+      <div class="tier easy"><b>Easy &middot; 20s, single-segment</b>Tests basic compliance&mdash;all a model without command switching can complete.</div>
+      <div class="tier med"><b>Medium &middot; 40s, two-segment</b>Adds exactly one switch, without which there is no transient; provides the first round trips.</div>
+      <div class="tier hard"><b>Hard &middot; 60s, three-segment</b>Patrol routes and 360&deg; rotations run past most models' conditioning window, where revisit and global memory fail.</div>
+    </div>
+    <figure>
+      <div class="figframe"><img src="static/images/trajectories_3d.png" alt="The 15 standardized action sequences" loading="lazy"></div>
+      <figcaption>The 15 standardized action sequences, from elementary translations and rotations to combined and cyclic trajectories.</figcaption>
+    </figure>
 
-          <!-- First-Person Stylized -->
-          <h3 class="title is-4" style="margin-top: 2rem;">First-Person Stylized</h3>
-          <div class="table-container">
-            <table class="table is-bordered is-striped is-hoverable is-fullwidth is-size-7">
-              <thead>
-                <tr>
-                  <th>Metric</th>
-                  <th>YUME 1.5</th>
-                  <th>MatrixGame 2.0</th>
-                  <th>HY-World</th>
-                  <th>HY-Game</th>
-                  <th>Oasis</th>
-                  <th>Genie 3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td colspan="7" style="background: #f0f4ff; font-weight: 700; font-style: italic;">Visual Quality</td></tr>
-                <tr>
-                  <td>Aesthetic Quality &uarr;</td>
-                  <td><u>57.03</u></td><td>47.74</td><td><strong>58.50</strong></td><td>44.02</td><td>30.84</td><td>46.84</td>
-                </tr>
-                <tr>
-                  <td>Imaging Quality &uarr;</td>
-                  <td><strong>69.15</strong></td><td>64.24</td><td><u>64.78</u></td><td>40.91</td><td>28.44</td><td>53.27</td>
-                </tr>
-                <tr><td colspan="7" style="background: #f0fff4; font-weight: 700; font-style: italic;">Control Alignment</td></tr>
-                <tr>
-                  <td>Translation Error &darr;</td>
-                  <td>0.223</td><td><u>0.182</u></td><td>0.244</td><td><strong>0.116</strong></td><td>0.350</td><td>0.261</td>
-                </tr>
-                <tr>
-                  <td>Rotation Error &darr;</td>
-                  <td>2.732</td><td><u>1.561</u></td><td>4.316</td><td><strong>0.932</strong></td><td>3.808</td><td>2.835</td>
-                </tr>
-                <tr><td colspan="7" style="background: #f5f0ff; font-weight: 700; font-style: italic;">World Consistency</td></tr>
-                <tr>
-                  <td>Reprojection Error &darr;</td>
-                  <td>0.638</td><td>0.672</td><td><u>0.638</u></td><td>0.640</td><td>1.877</td><td><strong>0.256</strong></td>
-                </tr>
-                <tr>
-                  <td>State Consistency &uarr;</td>
-                  <td>5.891</td><td>2.873</td><td><u>6.408</u></td><td>4.782</td><td>3.523</td><td><strong>6.835</strong></td>
-                </tr>
-                <tr>
-                  <td>Content Consistency &uarr;</td>
-                  <td>5.362</td><td>6.457</td><td><u>7.159</u></td><td>5.196</td><td>3.114</td><td><strong>7.306</strong></td>
-                </tr>
-                <tr>
-                  <td>Style Consistency &uarr;</td>
-                  <td>4.216</td><td>4.934</td><td><u>6.817</u></td><td>4.051</td><td>2.435</td><td><strong>7.523</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+    <p>
+      For each image, a VLM selects the five most plausible sequences from the library, identifying physical constraints&mdash;lateral obstacles in a corridor make prolonged strafing implausible&mdash;so
+      models are not penalized for refusing to walk through a wall. Across 100 images this yields <strong>500 evaluation cases</strong>.
+    </p>
+    <figure>
+      <div class="figframe"><img src="static/images/vlm_traj.jpg" alt="Context-aware action selection via VLM reasoning" loading="lazy"></div>
+      <figcaption>Context-aware action selection. A VLM analyzes the initial image to identify physical constraints and selects plausible action sequences from the predefined library.</figcaption>
+    </figure>
+  </section>
 
-          <!-- Third-Person -->
-          <h3 class="title is-4" style="margin-top: 2rem;">Third-Person</h3>
-          <p class="is-size-7 has-text-grey">Only three models natively support third-person perspective: MatrixGame 2.0, HY-World, and Genie 3.</p>
-          <div class="table-container">
-            <table class="table is-bordered is-striped is-hoverable is-fullwidth is-size-7">
-              <thead>
-                <tr>
-                  <th rowspan="2">Metric</th>
-                  <th colspan="3" class="has-text-centered">Real</th>
-                  <th colspan="3" class="has-text-centered">Stylized</th>
-                </tr>
-                <tr>
-                  <th>MatrixGame 2.0</th><th>HY-World</th><th>Genie 3</th>
-                  <th>MatrixGame 2.0</th><th>HY-World</th><th>Genie 3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td colspan="7" style="background: #f0f4ff; font-weight: 700; font-style: italic;">Visual Quality</td></tr>
-                <tr>
-                  <td>Aesthetic Quality &uarr;</td>
-                  <td><u>52.78</u></td><td><strong>57.69</strong></td><td>51.04</td>
-                  <td>51.60</td><td><strong>60.57</strong></td><td><u>53.76</u></td>
-                </tr>
-                <tr>
-                  <td>Imaging Quality &uarr;</td>
-                  <td><u>67.26</u></td><td><strong>70.76</strong></td><td>60.20</td>
-                  <td><u>65.24</u></td><td><strong>66.45</strong></td><td>63.98</td>
-                </tr>
-                <tr><td colspan="7" style="background: #f0fff4; font-weight: 700; font-style: italic;">Control Alignment</td></tr>
-                <tr>
-                  <td>Translation Error &darr;</td>
-                  <td>0.284</td><td><strong>0.206</strong></td><td><u>0.212</u></td>
-                  <td>0.230</td><td><u>0.220</u></td><td><strong>0.129</strong></td>
-                </tr>
-                <tr>
-                  <td>Rotation Error &darr;</td>
-                  <td>27.606</td><td><strong>2.137</strong></td><td><u>14.905</u></td>
-                  <td>9.211</td><td><strong>5.285</strong></td><td><u>8.823</u></td>
-                </tr>
-                <tr><td colspan="7" style="background: #f5f0ff; font-weight: 700; font-style: italic;">World Consistency</td></tr>
-                <tr>
-                  <td>Reprojection Error &darr;</td>
-                  <td>0.814</td><td><u>0.640</u></td><td><strong>0.584</strong></td>
-                  <td>0.744</td><td><u>0.713</u></td><td><strong>1.148</strong></td>
-                </tr>
-                <tr>
-                  <td>State Consistency &uarr;</td>
-                  <td>5.136</td><td><u>6.628</u></td><td><strong>7.082</strong></td>
-                  <td>3.625</td><td><u>5.274</u></td><td><strong>7.565</strong></td>
-                </tr>
-                <tr>
-                  <td>Content Consistency &uarr;</td>
-                  <td>3.405</td><td><u>5.707</u></td><td><strong>7.424</strong></td>
-                  <td>2.083</td><td><u>5.147</u></td><td><strong>7.109</strong></td>
-                </tr>
-                <tr>
-                  <td>Style Consistency &uarr;</td>
-                  <td>1.659</td><td><u>4.491</u></td><td><strong>8.247</strong></td>
-                  <td>2.942</td><td><u>7.236</u></td><td><strong>8.541</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+  <!-- ── Metrics ── -->
+  <section class="wrap" id="metrics">
+    <p class="kicker">Evaluation Dimensions</p>
+    <h2>Nine deterministic metrics, three questions</h2>
+    <p class="muted">
+      An action command is a <strong>step input</strong>, and control theory already supplies the vocabulary for a system's response: not just its final position, but how it gets there.
+      All estimators are feed-forward&mdash;scores are bit-identical across runs.
+    </p>
 
-      <!-- Key Takeaways -->
-      <section class="section pt-0" id="takeaways">
-        <div class="content">
-          <h2 class="title is-3">Key Takeaways</h2>
-          <div class="columns is-multiline">
-            <div class="column is-6">
-              <div class="notification" style="background: #fefce8; border-radius: var(--border-radius); border-left: 4px solid #eab308;">
-                <p><strong>Visual quality and world consistency are largely uncorrelated.</strong> YUME produces the most appealing frames yet its worlds lack global coherence, while Genie 3 maintains the most consistent worlds with only moderate frame-level fidelity.</p>
-              </div>
-            </div>
-            <div class="column is-6">
-              <div class="notification" style="background: #eff6ff; border-radius: var(--border-radius); border-left: 4px solid #3b82f6;">
-                <p><strong>Strong control alignment does not imply overall quality.</strong> HY-Game follows commands precisely but at the cost of visual fidelity, whereas Genie 3 has higher trajectory error yet preserves a globally coherent world.</p>
-              </div>
-            </div>
-            <div class="column is-6">
-              <div class="notification" style="background: #fce7f3; border-radius: var(--border-radius); border-left: 4px solid #ec4899;">
-                <p><strong>Third-person generation exposes severe weaknesses.</strong> MatrixGame's rotation error explodes by ~20&times;, highlighting the difficulty of maintaining camera control around a visible character.</p>
-              </div>
-            </div>
-            <div class="column is-6">
-              <div class="notification" style="background: #f0fdf4; border-radius: var(--border-radius); border-left: 4px solid #22c55e;">
-                <p><strong>Domain-specific training does not transfer.</strong> Open-Oasis, trained on Minecraft, fails across all metrics on real-world and stylized scenes.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div class="cards3">
+      <div class="mcard ad">
+        <h4>Action Dynamics</h4>
+        <p class="q">Does motion go the right way, only that way, soon enough&mdash;and does it hold?</p>
+        <ul>
+          <li><b>Direction Accuracy</b><span class="pill ad">trans / rot</span><br>Does the world move the commanded way?</li>
+          <li><b>Direction Purity</b><span class="pill ad">trans / rot</span><br>Does it move <em>only</em> that way, without off-axis leakage?</li>
+          <li><b>Response Latency</b><span class="pill ad">trans / rot</span><br>How long until a new command takes effect?</li>
+          <li><b>Motion Stability</b><span class="pill ad">trans / rot</span><br>Does motion hold, or stutter, stall, and decay?</li>
+        </ul>
+      </div>
+      <div class="mcard wm-c">
+        <h4>World Memory</h4>
+        <p class="q">Does the world stay the same&mdash;at three separate timescales?</p>
+        <ul>
+          <li><b>Local Memory</b><br>No flicker, mutation, or hard cuts between adjacent moments.</li>
+          <li><b>Global Memory</b><br>Geometry stays self-consistent as drift accumulates over the full video.</li>
+          <li><b>Revisit Memory</b><br>Round-trip probes: turn away and back&mdash;is the street still there? Frames paired by equal accumulated motion, not equal time.</li>
+        </ul>
+      </div>
+      <div class="mcard vq">
+        <h4>Visual Quality</h4>
+        <p class="q">Does everything else reduce to appearance? (It does not.)</p>
+        <ul>
+          <li><b>Perceptual Quality</b><br>Frame fidelity from Q-Align logits&mdash;deterministic, no sampling.</li>
+          <li><b>Aesthetic Quality</b><br>Aesthetic appeal from the same deterministic reader.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-      <!-- BibTeX -->
-      <section class="section pt-0" id="bibtex">
-        <div class="content">
-          <div class="bibtex-header">
-            <h2 class="title is-3">BibTeX</h2>
-            <button class="copy-bibtex-btn" type="button" data-copy-target="bibtex-code">
-              Copy
-            </button>
-          </div>
-          <pre><code id="bibtex-code">@article{xu2026worldmark,
+  <!-- ── Results ── -->
+  <section class="wrap-wide" id="results">
+    <div class="wrap" style="padding: 0;">
+      <p class="kicker">Quantitative Results</p>
+      <h2>Ten models, four splits</h2>
+      <p class="muted">
+        All metrics normalized to [0,100], higher is better. <strong style="color: var(--accent);">Bold</strong> = best,
+        <u style="text-underline-offset:3px;">underline</u> = second best. 125 videos per model per split; five models support third-person natively.
+      </p>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-target="tbl-fp-real">First-Person &middot; Real</button>
+      <button class="tab" data-target="tbl-fp-style">First-Person &middot; Stylized</button>
+      <button class="tab" data-target="tbl-tp-real">Third-Person &middot; Real</button>
+      <button class="tab" data-target="tbl-tp-style">Third-Person &middot; Stylized</button>
+    </div>
+
+    <div class="rtable active" id="tbl-fp-real">
+    <div class="table-scroll"><table>
+    <thead>
+    <tr><th rowspan="3" class="model-col">Model</th>
+    <th colspan="8" class="grp grp-ad">Action Dynamics</th>
+    <th colspan="3" class="grp grp-wm">World Memory</th>
+    <th colspan="2" class="grp grp-vq">Visual Quality</th></tr>
+    <tr>
+    <th colspan="2" class="sub">Direction<br>Accuracy</th>
+    <th colspan="2" class="sub">Direction<br>Purity</th>
+    <th colspan="2" class="sub">Motion<br>Stability</th>
+    <th colspan="2" class="sub">Response<br>Latency</th>
+    <th rowspan="2" class="sub">Local</th>
+    <th rowspan="2" class="sub">Global</th>
+    <th rowspan="2" class="sub">Revisit</th>
+    <th rowspan="2" class="sub">Perceptual</th>
+    <th rowspan="2" class="sub">Aesthetic</th></tr>
+    <tr>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th></tr>
+    </thead>
+    <tbody>
+    <tr><td class="model-col">AlayaWorld</td><td>78.67</td><td class="best">92.31</td><td>72.55</td><td class="best">90.32</td><td>68.05</td><td class="best">98.08</td><td>75.48</td><td>96.76</td><td>92.53</td><td class="best">75.77</td><td class="best">93.43</td><td class="second">85.94</td><td class="second">58.50</td></tr>
+    <tr><td class="model-col">DreamX-World</td><td>96.91</td><td>76.60</td><td>78.18</td><td>70.38</td><td>65.41</td><td>27.71</td><td class="second">96.10</td><td>97.00</td><td>93.29</td><td>34.04</td><td>79.89</td><td>71.16</td><td>51.98</td></tr>
+    <tr><td class="model-col">HY-GameCraft 1.0</td><td>89.07</td><td>2.74</td><td>74.82</td><td>63.07</td><td>66.76</td><td>13.70</td><td>90.97</td><td>51.99</td><td>91.31</td><td>36.54</td><td>74.20</td><td>64.55</td><td>54.38</td></tr>
+    <tr><td class="model-col">HY-World 1.5</td><td>92.55</td><td>85.05</td><td>81.18</td><td>80.31</td><td>31.66</td><td>86.39</td><td>85.44</td><td>85.13</td><td>94.17</td><td>58.88</td><td>87.52</td><td>76.15</td><td>56.59</td></tr>
+    <tr><td class="model-col">LingBot-World</td><td>89.14</td><td class="second">87.32</td><td>75.43</td><td>83.64</td><td>79.14</td><td>94.26</td><td>86.56</td><td class="best">99.20</td><td>92.26</td><td>36.85</td><td>79.30</td><td>75.65</td><td>56.49</td></tr>
+    <tr><td class="model-col">Lyra 2.0</td><td class="second">98.16</td><td>85.44</td><td class="best">86.32</td><td class="second">86.18</td><td class="best">87.21</td><td>80.35</td><td>90.62</td><td>86.10</td><td class="second">96.91</td><td class="second">65.34</td><td class="second">93.26</td><td>84.03</td><td>57.66</td></tr>
+    <tr><td class="model-col">Matrix-Game 2.0</td><td>95.12</td><td>80.66</td><td>80.57</td><td>75.97</td><td class="second">79.89</td><td>78.85</td><td class="best">98.23</td><td>86.47</td><td>91.31</td><td>40.56</td><td>72.22</td><td>71.15</td><td>51.00</td></tr>
+    <tr><td class="model-col">Matrix-Game 3.0</td><td class="best">98.37</td><td>78.30</td><td class="second">84.83</td><td>73.38</td><td>76.39</td><td class="second">96.74</td><td>91.83</td><td>96.39</td><td>91.52</td><td>50.60</td><td>80.38</td><td>69.62</td><td>52.86</td></tr>
+    <tr><td class="model-col">SANA-WM</td><td>88.74</td><td>83.08</td><td>65.51</td><td>78.55</td><td>46.79</td><td>83.39</td><td>76.83</td><td class="second">97.41</td><td>91.70</td><td>53.45</td><td>82.05</td><td>76.76</td><td>53.16</td></tr>
+    <tr><td class="model-col">Yume 1.5</td><td>51.85</td><td>59.47</td><td>75.16</td><td>52.53</td><td>55.35</td><td>79.45</td><td>40.66</td><td>77.11</td><td class="best">99.36</td><td>55.25</td><td>80.96</td><td class="best">87.24</td><td class="best">64.72</td></tr>
+    </tbody></table></div></div>
+
+    <div class="rtable" id="tbl-fp-style">
+    <div class="table-scroll"><table>
+    <thead>
+    <tr><th rowspan="3" class="model-col">Model</th>
+    <th colspan="8" class="grp grp-ad">Action Dynamics</th>
+    <th colspan="3" class="grp grp-wm">World Memory</th>
+    <th colspan="2" class="grp grp-vq">Visual Quality</th></tr>
+    <tr>
+    <th colspan="2" class="sub">Direction<br>Accuracy</th>
+    <th colspan="2" class="sub">Direction<br>Purity</th>
+    <th colspan="2" class="sub">Motion<br>Stability</th>
+    <th colspan="2" class="sub">Response<br>Latency</th>
+    <th rowspan="2" class="sub">Local</th>
+    <th rowspan="2" class="sub">Global</th>
+    <th rowspan="2" class="sub">Revisit</th>
+    <th rowspan="2" class="sub">Perceptual</th>
+    <th rowspan="2" class="sub">Aesthetic</th></tr>
+    <tr>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th></tr>
+    </thead>
+    <tbody>
+    <tr><td class="model-col">AlayaWorld</td><td>71.89</td><td>81.17</td><td>75.78</td><td class="second">79.48</td><td>67.13</td><td>86.29</td><td>55.55</td><td>86.69</td><td>87.65</td><td class="best">67.82</td><td class="best">89.94</td><td class="best">84.01</td><td class="best">63.83</td></tr>
+    <tr><td class="model-col">DreamX-World</td><td class="second">96.57</td><td>74.62</td><td>77.65</td><td>69.56</td><td>57.20</td><td>36.43</td><td class="second">94.03</td><td class="second">96.02</td><td class="second">90.87</td><td>30.71</td><td>76.89</td><td>66.38</td><td>50.37</td></tr>
+    <tr><td class="model-col">HY-GameCraft 1.0</td><td>91.77</td><td>2.83</td><td>72.63</td><td>55.46</td><td>49.24</td><td>15.85</td><td>89.38</td><td>51.97</td><td>84.92</td><td>29.94</td><td>69.52</td><td>59.34</td><td>50.07</td></tr>
+    <tr><td class="model-col">HY-World 1.5</td><td>87.91</td><td class="best">85.09</td><td>70.41</td><td>77.30</td><td>45.37</td><td>85.48</td><td>81.15</td><td>81.90</td><td>87.97</td><td class="second">52.80</td><td class="second">87.57</td><td>73.83</td><td>60.86</td></tr>
+    <tr><td class="model-col">LingBot-World</td><td>89.98</td><td class="second">83.20</td><td>72.31</td><td class="best">79.81</td><td class="best">72.22</td><td class="second">90.25</td><td>89.67</td><td class="best">99.31</td><td>83.43</td><td>30.81</td><td>78.13</td><td>70.42</td><td>60.85</td></tr>
+    <tr><td class="model-col">Lyra 2.0</td><td>95.44</td><td>76.00</td><td class="second">80.07</td><td>75.56</td><td class="second">69.21</td><td>70.88</td><td>87.03</td><td>83.62</td><td>83.53</td><td>47.36</td><td>87.15</td><td>73.91</td><td>57.21</td></tr>
+    <tr><td class="model-col">Matrix-Game 2.0</td><td>92.17</td><td>77.34</td><td>74.10</td><td>71.91</td><td>67.09</td><td>78.72</td><td class="best">94.58</td><td>89.26</td><td>82.89</td><td>38.13</td><td>70.03</td><td>69.42</td><td>49.40</td></tr>
+    <tr><td class="model-col">Matrix-Game 3.0</td><td class="best">97.13</td><td>77.08</td><td class="best">80.58</td><td>71.21</td><td>59.50</td><td class="best">90.76</td><td>87.75</td><td>95.54</td><td>79.08</td><td>44.91</td><td>77.10</td><td>69.35</td><td>52.75</td></tr>
+    <tr><td class="model-col">SANA-WM</td><td>86.27</td><td>79.62</td><td>63.13</td><td>75.11</td><td>53.46</td><td>89.96</td><td>82.20</td><td>94.42</td><td>78.19</td><td>47.17</td><td>77.50</td><td>71.12</td><td>50.98</td></tr>
+    <tr><td class="model-col">Yume 1.5</td><td>54.24</td><td>51.77</td><td>72.92</td><td>44.09</td><td>56.79</td><td>70.80</td><td>34.58</td><td>80.00</td><td class="best">96.36</td><td>43.34</td><td>76.96</td><td class="second">79.68</td><td class="second">61.29</td></tr>
+    </tbody></table></div></div>
+
+    <div class="rtable" id="tbl-tp-real">
+    <div class="table-scroll"><table>
+    <thead>
+    <tr><th rowspan="3" class="model-col">Model</th>
+    <th colspan="8" class="grp grp-ad">Action Dynamics</th>
+    <th colspan="3" class="grp grp-wm">World Memory</th>
+    <th colspan="2" class="grp grp-vq">Visual Quality</th></tr>
+    <tr>
+    <th colspan="2" class="sub">Direction<br>Accuracy</th>
+    <th colspan="2" class="sub">Direction<br>Purity</th>
+    <th colspan="2" class="sub">Motion<br>Stability</th>
+    <th colspan="2" class="sub">Response<br>Latency</th>
+    <th rowspan="2" class="sub">Local</th>
+    <th rowspan="2" class="sub">Global</th>
+    <th rowspan="2" class="sub">Revisit</th>
+    <th rowspan="2" class="sub">Perceptual</th>
+    <th rowspan="2" class="sub">Aesthetic</th></tr>
+    <tr>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th></tr>
+    </thead>
+    <tbody>
+    <tr><td class="model-col">DreamX-World</td><td class="best">97.29</td><td>75.64</td><td>76.48</td><td>69.30</td><td>61.92</td><td>26.49</td><td class="second">95.98</td><td class="second">97.15</td><td class="second">93.64</td><td>31.16</td><td>79.44</td><td>71.60</td><td>52.87</td></tr>
+    <tr><td class="model-col">HY-World 1.5</td><td>90.49</td><td class="second">82.12</td><td class="best">81.34</td><td class="second">77.75</td><td>41.92</td><td class="best">87.83</td><td>80.69</td><td>84.87</td><td class="best">93.92</td><td class="best">55.97</td><td class="best">87.55</td><td class="second">76.57</td><td class="best">59.11</td></tr>
+    <tr><td class="model-col">LingBot-World</td><td>74.22</td><td>55.78</td><td>69.85</td><td>62.80</td><td class="second">66.76</td><td>64.42</td><td>81.15</td><td>74.39</td><td>89.89</td><td>47.08</td><td>81.68</td><td class="best">76.67</td><td class="second">58.74</td></tr>
+    <tr><td class="model-col">Matrix-Game 2.0</td><td class="second">91.34</td><td>46.50</td><td class="second">76.49</td><td>39.82</td><td class="best">77.59</td><td>75.22</td><td class="best">98.11</td><td>87.71</td><td>78.76</td><td>31.68</td><td>75.64</td><td>67.23</td><td>45.78</td></tr>
+    <tr><td class="model-col">SANA-WM</td><td>88.89</td><td class="best">83.10</td><td>64.60</td><td class="best">78.33</td><td>46.03</td><td class="second">82.52</td><td>76.84</td><td class="best">97.35</td><td>91.32</td><td class="second">52.25</td><td class="second">82.62</td><td>75.44</td><td>52.72</td></tr>
+    </tbody></table></div></div>
+
+    <div class="rtable" id="tbl-tp-style">
+    <div class="table-scroll"><table>
+    <thead>
+    <tr><th rowspan="3" class="model-col">Model</th>
+    <th colspan="8" class="grp grp-ad">Action Dynamics</th>
+    <th colspan="3" class="grp grp-wm">World Memory</th>
+    <th colspan="2" class="grp grp-vq">Visual Quality</th></tr>
+    <tr>
+    <th colspan="2" class="sub">Direction<br>Accuracy</th>
+    <th colspan="2" class="sub">Direction<br>Purity</th>
+    <th colspan="2" class="sub">Motion<br>Stability</th>
+    <th colspan="2" class="sub">Response<br>Latency</th>
+    <th rowspan="2" class="sub">Local</th>
+    <th rowspan="2" class="sub">Global</th>
+    <th rowspan="2" class="sub">Revisit</th>
+    <th rowspan="2" class="sub">Perceptual</th>
+    <th rowspan="2" class="sub">Aesthetic</th></tr>
+    <tr>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th>
+    <th class="axis">trans</th><th class="axis">rot</th></tr>
+    </thead>
+    <tbody>
+    <tr><td class="model-col">DreamX-World</td><td class="best">96.39</td><td>75.03</td><td class="second">75.93</td><td>69.74</td><td>53.15</td><td>36.33</td><td class="best">95.45</td><td class="best">94.58</td><td class="best">90.12</td><td>29.94</td><td class="second">77.59</td><td>66.22</td><td>50.76</td></tr>
+    <tr><td class="model-col">HY-World 1.5</td><td>93.02</td><td class="second">79.07</td><td>72.05</td><td class="second">71.65</td><td>50.15</td><td class="second">85.46</td><td>79.25</td><td>83.03</td><td class="second">89.26</td><td class="best">48.04</td><td class="best">85.46</td><td class="second">75.92</td><td class="second">64.05</td></tr>
+    <tr><td class="model-col">LingBot-World</td><td>69.93</td><td>30.90</td><td>65.97</td><td>43.49</td><td class="second">59.67</td><td>32.74</td><td>78.10</td><td>52.17</td><td>87.59</td><td class="second">47.71</td><td>76.87</td><td class="best">77.52</td><td class="best">68.03</td></tr>
+    <tr><td class="model-col">Matrix-Game 2.0</td><td class="second">93.94</td><td>42.42</td><td class="best">76.95</td><td>37.49</td><td class="best">74.03</td><td>67.46</td><td class="second">86.73</td><td>79.90</td><td>72.97</td><td>31.28</td><td>75.26</td><td>67.29</td><td>45.98</td></tr>
+    <tr><td class="model-col">SANA-WM</td><td>87.43</td><td class="best">80.84</td><td>63.92</td><td class="best">76.79</td><td>54.21</td><td class="best">89.30</td><td>79.78</td><td class="second">93.91</td><td>75.78</td><td>46.17</td><td>76.33</td><td>70.59</td><td>51.63</td></tr>
+    </tbody></table></div></div>
+  </section>
+
+  <!-- ── Findings ── -->
+  <section class="wrap" id="findings">
+    <p class="kicker">Key Findings</p>
+    <h2>What one score cannot see</h2>
+    <div class="findings">
+      <div class="finding"><span class="num">01</span><b>Direction accuracy hides the differences that matter.</b>
+        Eight of ten models exceed 88 in translational direction accuracy&mdash;a solved problem, apparently. The other columns disagree: motion stability spans 31.7&ndash;87.2 and latency 40.7&ndash;98.2. Models indistinguishable by direction differ several-fold in how they get there.</div>
+      <div class="finding"><span class="num">02</span><b>The fastest responders are the least stable.</b>
+        DreamX-World has the highest response latency score in the suite yet nearly the lowest rotational stability&mdash;a ~50-point gap. The trade-off recurs across fast responders; no single action metric can capture it.</div>
+      <div class="finding"><span class="num">03</span><b>Command axes fail independently.</b>
+        HY-GameCraft 1.0 follows translation well (89.1) but is unresponsive to rotation (2.7). Milder ~20-point asymmetries appear in other models, and AlayaWorld inverts the pattern, with rotation ahead of translation.</div>
+      <div class="finding"><span class="num">04</span><b>Memory needs its three timescales.</b>
+        Local memory is saturated (&sigma; = 2.6) while global memory spreads over 34&ndash;76 (&sigma; = 13.1). An averaged score would follow the saturated component&mdash;concealing that the smoothest frame-to-frame model yields the least coherent geometry.</div>
+      <div class="finding"><span class="num">05</span><b>Third-person viewpoints attack rotation.</b>
+        Switching to third-person costs 13.9 points of rotational direction accuracy on average, against 4.0 translationally&mdash;and unevenly: Matrix-Game 2.0 loses 34.2 while SANA-WM is unaffected. Camera control around a visible character is a distinct capability.</div>
+      <div class="finding"><span class="num">06</span><b>Stylization attacks memory, not action.</b>
+        From Real to Stylized, all ten models lose local and global memory, while action dynamics barely moves. Command following is largely style-agnostic; keeping a stylized world self-consistent is not.</div>
+      <div class="finding" style="grid-column: 1 / -1;"><span class="num">07</span><b>Visual quality is not a proxy for controllability.</b>
+        Perceptual quality correlates positively with all three memory metrics (&rho; = 0.76&ndash;0.79) yet <em>negatively</em> with translational action dynamics, most strongly with response latency (&rho; = &minus;0.82). Yume 1.5 is the clearest case: first in perceptual quality and local memory, last in translational direction accuracy and latency. Ranking world models by appearance misranks them as interactive environments.</div>
+    </div>
+  </section>
+
+  <!-- ── Human alignment ── -->
+  <section class="wrap" id="human">
+    <p class="kicker">Human Preference Alignment</p>
+    <h2>85.1% agreement with human judgment</h2>
+    <p class="muted">
+      Forty annotators each compared 20 blinded video pairs per metric. Averaged over ten dimensions, metric&ndash;human agreement is
+      <strong style="color: var(--ink);">85.1%</strong>, from 79.1% (rotational stability) to 93.3% (revisit memory).
+      Ties are more frequent on rotation than translation&mdash;rotational control is harder to judge by eye.
+    </p>
+    <figure>
+      <div class="figframe"><img src="static/images/human_alignment.png" alt="Metric-human agreement per motion axis for the four action metrics" loading="lazy"></div>
+      <figcaption>Metric&ndash;human agreement per motion axis. Bar height is the fraction of trials where metric and annotator preferred the same video; error bars are &plusmn;1 s.d. across 40 annotators.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ── Arena ── -->
+  <section class="wrap">
+    <div class="arena-cta" id="arena">
+      <h2>World Model Arena</h2>
+      <p>Beyond offline metrics: pit leading world models against each other in side-by-side battles and watch the live leaderboard.</p>
+      <a class="btn" href="https://warena.ai/" target="_blank" rel="noopener">Enter the Arena &rarr;</a>
+    </div>
+  </section>
+
+  <!-- ── BibTeX ── -->
+  <section class="wrap" id="bibtex">
+    <p class="kicker">Citation</p>
+    <h2>BibTeX</h2>
+    <div class="bib-box">
+      <button class="copy-btn" type="button" id="copy-bib">Copy</button>
+      <pre id="bib-code">@article{xu2026worldmark,
   title={WorldMark: A Unified Benchmark Suite for Interactive Video World Models},
-  author={Xu, Xiaojie and Lin, Zhengyuan and He, Kang and Feng, Yukang and Mao, Xiaofeng and Yin, Yuanyang and Zhang, Kaipeng and Ge, Yongtao},
+  author={Xu, Xiaojie and Lin, Zhengyuan and He, Kang and Feng, Yukang and Mao, Xiaofeng and Yin, Yuanyang and Ge, Yongtao and Zhang, Kaipeng},
   journal={arXiv preprint arXiv:2604.21686},
   year={2026}
-}</code></pre>
-        </div>
-      </section>
-
-      <footer class="footer mt-6">
-        <div class="content has-text-centered">
-          <p class="is-size-7">
-            This page is adapted from the
-            <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener">Academic Project Page Template</a>
-            and licensed under
-            <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
-          </p>
-        </div>
-      </footer>
+}</pre>
     </div>
-  </main>
+  </section>
+
+  <footer>
+    <img src="static/images/alaya.png" alt="Alaya Lab" class="logo-alaya">
+    <p>&copy; 2026 Alaya Lab &middot; <a href="https://github.com/AlayaLab/WorldMark">github.com/AlayaLab/WorldMark</a> &middot; <a href="https://warena.ai/">warena.ai</a></p>
+  </footer>
 
   <style>
-    /* Invert black Alaya logo on dark backgrounds */
-    @media (prefers-color-scheme: dark) {
-      .logo-alaya { filter: invert(1); }
-    }
-
-    /* Model Arena button */
-    .arena-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) !important;
-      color: white !important;
-      border: none !important;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-      font-weight: 700 !important;
-    }
-    .arena-btn:hover {
-      background: linear-gradient(135deg, #764ba2 0%, #f093fb 50%, #667eea 100%) !important;
-      box-shadow: 0 6px 20px rgba(118, 75, 162, 0.5);
-      transform: translateY(-2px);
-    }
-
-    .video-embed {
-      position: relative;
-      width: 100%;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border-radius: 16px;
-      box-shadow: var(--shadow-xl);
-      background: #000;
-    }
-    .video-embed iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Result table styling */
-    .table th, .table td {
-      vertical-align: middle !important;
-      text-align: center;
-    }
-    .table th:first-child, .table td:first-child {
-      text-align: left;
-    }
-    .table strong {
-      color: #1e40af;
-    }
-    .table u {
-      text-decoration-color: #94a3b8;
-    }
-
-    /* Right-side Navigation */
-    .side-nav {
-      position: fixed;
-      right: 2rem;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 100;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .side-nav li {
-      margin-bottom: 0.5rem;
-    }
-    .side-nav a {
-      display: block;
-      padding: 0.4rem 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--text-light);
-      text-decoration: none;
-      border-right: 2px solid transparent;
-      transition: var(--transition);
-      text-align: right;
-      white-space: nowrap;
-    }
-    .side-nav a:hover {
-      color: var(--primary-color);
-      border-right-color: var(--primary-color);
-    }
-    .side-nav a.active {
-      color: var(--primary-color);
-      font-weight: 700;
-      border-right-color: var(--primary-color);
-    }
-    @media screen and (max-width: 1400px) {
-      .side-nav {
-        display: none;
-      }
-    }
-
-    /* Card hover */
-    .card {
-      transition: var(--transition);
-    }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
+    @media (prefers-color-scheme: dark) { /* page is light-only; keep logo visible if embedded elsewhere */ }
   </style>
-  <!-- Right-side Navigation -->
-  <ul class="side-nav">
-    <li><a href="#abstract">Abstract</a></li>
-    <li><a href="#video">Video</a></li>
-    <li><a href="#overview">Overview</a></li>
-    <li><a href="#comparison">Why WorldMark?</a></li>
-    <li><a href="#image-suite">Image Suite</a></li>
-    <li><a href="#action-suite">Action Suite</a></li>
-    <li><a href="#results">Results</a></li>
-    <li><a href="#takeaways">Key Takeaways</a></li>
-    <li><a href="#bibtex">BibTeX</a></li>
-  </ul>
 
   <script>
-    // Scroll-spy for side navigation
-    document.addEventListener('DOMContentLoaded', function() {
-      const navLinks = document.querySelectorAll('.side-nav a');
-      const sections = [];
-      navLinks.forEach(function(link) {
-        var id = link.getAttribute('href').slice(1);
-        var el = document.getElementById(id);
-        if (el) sections.push({ id: id, el: el });
+    // Results tab switcher
+    document.querySelectorAll('.tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.tab').forEach(function (b) { b.classList.remove('active'); });
+        document.querySelectorAll('.rtable').forEach(function (t) { t.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.target).classList.add('active');
       });
-      function onScroll() {
-        var scrollPos = window.scrollY + window.innerHeight / 3;
-        var current = '';
-        sections.forEach(function(s) {
-          if (s.el.offsetTop <= scrollPos) current = s.id;
-        });
-        navLinks.forEach(function(link) {
-          link.classList.toggle('active', link.getAttribute('href') === '#' + current);
-        });
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
+    });
+
+    // Copy BibTeX
+    document.getElementById('copy-bib').addEventListener('click', function () {
+      navigator.clipboard.writeText(document.getElementById('bib-code').textContent).then(function () {
+        var b = document.getElementById('copy-bib');
+        b.textContent = 'Copied!';
+        setTimeout(function () { b.textContent = 'Copy'; }, 1600);
+      });
     });
   </script>
 </body>
