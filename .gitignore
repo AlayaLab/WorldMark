@@ -1,3 +1,15 @@
 .DS_Store
 __pycache__/
 *.pyc
+
+# Local working material — not for the public repo
+*.pdf
+*.tex
+*.pptx
+assets/
+figs/
+0505_rebuttal/
+make_video.py
+make_ppt.py
+make_animated_ppt.py
+.claude/
