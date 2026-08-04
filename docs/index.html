@@ -99,6 +99,10 @@
     figcaption { font-size: 13.5px; color: var(--ink-faint); margin-top: 10px; text-align: center; line-height: 1.55; max-width: 720px; margin-left: auto; margin-right: auto; }
     .figframe { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #fff; max-width: 50%; margin: 0 auto; }
     @media (max-width: 860px) { .figframe { max-width: 100%; } }
+    .fig-row { display: flex; gap: 18px; align-items: flex-start; margin: 26px 0 8px; }
+    .fig-row figure { flex: 1; margin: 0; min-width: 0; }
+    .fig-row .figframe { max-width: 100%; }
+    @media (max-width: 860px) { .fig-row { flex-direction: column; } }
 
     /* ── Hero ────────────────────────────────── */
     .hero { text-align: center; padding: 64px 0 30px; }
@@ -126,13 +130,34 @@
     .btn.arena { background: linear-gradient(120deg, #5b2ee5, #9333ea, #d946ef); }
 
     /* ── Stats strip ─────────────────────────── */
-    .stats { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 44px auto 0; max-width: 900px; }
+    .stats { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 44px auto 0; max-width: 1020px; }
     .stat {
-      flex: 1 1 150px; padding: 18px 10px; text-align: center;
+      flex: 1 1 260px; padding: 20px 22px; text-align: center;
       background: var(--bg-alt); border-radius: var(--radius);
     }
-    .stat b { display: block; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); }
-    .stat span { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+    .stat b { display: block; font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); }
+    .stat span { font-size: 14px; font-weight: 700; color: var(--ink); }
+    .stat ul { list-style: none; margin-top: 12px; text-align: left; }
+    .stat li {
+      font-size: 12.5px; line-height: 1.5; color: var(--ink-soft);
+      padding: 5px 0 5px 16px; border-top: 1px dashed var(--line); position: relative;
+    }
+    .stat li::before { content: "·"; position: absolute; left: 4px; font-weight: 800; color: var(--accent); }
+
+    /* ── Bullet lists ────────────────────────── */
+    .blist-head { font-size: 15px; font-weight: 800; color: var(--ink); margin-top: 26px; }
+    .blist { list-style: none; margin-top: 10px; }
+    .blist li {
+      position: relative; padding: 9px 0 9px 30px; font-size: 15px; color: var(--ink-soft);
+      border-top: 1px solid var(--line);
+    }
+    .blist li:first-child { border-top: none; }
+    .blist li b { color: var(--ink); }
+    .blist li::before {
+      position: absolute; left: 0; top: 9px; font-weight: 800; font-size: 14px;
+    }
+    .blist.bad  li::before { content: "✗"; color: #d43c3c; }
+    .blist.good li::before { content: "✓"; color: #0a8a5f; }
 
     /* ── Comparison table ────────────────────── */
     .cmp-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); max-width: 760px; margin-left: auto; margin-right: auto; }
@@ -270,7 +295,6 @@
     <div class="topbar-inner">
       <a class="brand" href="#top"><img src="static/images/favicon.png" alt="">WorldMark</a>
       <div class="topnav">
-        <a href="#abstract">Abstract</a>
         <a href="#comparison">Why WorldMark</a>
         <a href="#suite">Benchmark</a>
         <a href="#metrics">Metrics</a>
@@ -328,9 +352,33 @@
     </div>
 
     <div class="stats">
-      <div class="stat"><b>10</b><span>Models Evaluated</span></div>
-      <div class="stat"><b>500</b><span>Standardized Cases</span></div>
-      <div class="stat"><b>9</b><span>Deterministic Metrics</span></div>
+      <div class="stat">
+        <b>10</b><span>Models Evaluated</span>
+        <ul>
+          <li>Yume 1.5 &middot; HY-World 1.5 &middot; HY-GameCraft 1.0</li>
+          <li>Matrix-Game 2.0 / 3.0 &middot; LingBot-World</li>
+          <li>SANA-WM &middot; DreamX-World &middot; AlayaWorld &middot; Lyra 2.0</li>
+          <li>Caption, pose, keyboard &amp; trajectory control formats&mdash;one adapter each</li>
+        </ul>
+      </div>
+      <div class="stat">
+        <b>500</b><span>Standardized Cases</span>
+        <ul>
+          <li>50 scenes: 25 photorealistic + 25 stylized</li>
+          <li>Paired first-/third-person views (100 images)</li>
+          <li>5 VLM-selected trajectories per image</li>
+          <li>3 difficulty tiers, 20&ndash;60s</li>
+        </ul>
+      </div>
+      <div class="stat">
+        <b>9</b><span>Deterministic Metrics</span>
+        <ul>
+          <li>Action Dynamics: accuracy, purity, latency, stability (per axis)</li>
+          <li>World Memory: local, global, revisit</li>
+          <li>Visual Quality: perceptual, aesthetic</li>
+          <li>Feed-forward only&mdash;bit-identical across runs</li>
+        </ul>
+      </div>
     </div>
   </header>
 
@@ -345,34 +393,26 @@
     </figure>
   </section>
 
-  <!-- ── Abstract ── -->
-  <section class="wrap" id="abstract">
-    <p class="kicker">Abstract</p>
-    <h2>The user acts, and the world responds</h2>
-    <p>
-      Unlike text- or image-driven video generation, an interactive world model is driven by <em>actions</em>. Two obstacles stand in the way of fair and comprehensive evaluation.
-      First, models take actions in incompatible formats&mdash;captions, camera trajectories, action functions&mdash;so no shared protocol has been established.
-      Second, while existing benchmarks have advanced world memory and visual quality, action following is reduced to trajectory or direction error, which collapses a whole path into one number:
-      not how quickly the world reacts to a command switch, nor how cleanly it moves along the commanded axis.
-    </p>
-    <p>
-      <span class="wm">WorldMark</span> removes both obstacles. Per-model adapters translate a shared WASD-style vocabulary into each model's native control format,
-      so <strong>ten heterogeneous models receive semantically identical instructions</strong> across 500 standardized cases spanning styles, viewpoints, and difficulty tiers; a new model costs one adapter.
-      On this common ground we characterize action dynamics through a <strong>control-systems lens</strong>&mdash;direction accuracy, direction purity, response latency, and motion stability, each resolved per axis&mdash;alongside suites for world memory and visual quality.
-      Together they expose differences existing protocols cannot see: the fastest responders are often the least stable; per-axis resolution reveals models that follow translation almost perfectly while barely responding to rotation;
-      and the model with the best perceptual quality ranks last in translational direction accuracy and latency. We release all data, evaluation code, and model outputs.
-    </p>
-  </section>
-
   <!-- ── Comparison ── -->
   <section class="wrap" id="comparison">
     <p class="kicker">Why WorldMark</p>
-    <h2>What existing benchmarks cannot measure</h2>
-    <p class="muted">
-      Visual quality and memory are well served; action following is not. Prior protocols report a single direction or trajectory score,
-      which cannot in principle capture <em>response dynamics</em>&mdash;latency, persistence, stability&mdash;and none is fully reproducible run-to-run.
-    </p>
-    <div class="cmp-scroll" style="margin-top: 20px;">
+    <h2>The user acts, and the world responds</h2>
+
+    <p class="blist-head">Two obstacles stand in the way of fair evaluation</p>
+    <ul class="blist bad">
+      <li><b>Actions arrive in incompatible formats.</b> Captions, camera trajectories, pose strings, action functions&mdash;no shared protocol exists, so models cannot be driven with identical instructions on identical scenes.</li>
+      <li><b>Action following is collapsed into one number.</b> Existing benchmarks advanced world memory and visual quality, but reduce control to trajectory or direction error&mdash;which shows neither how quickly the world reacts to a command switch, nor how cleanly it moves along the commanded axis.</li>
+    </ul>
+
+    <p class="blist-head">How <span class="wm">WorldMark</span> removes them</p>
+    <ul class="blist good">
+      <li><b>One vocabulary, ten native interfaces.</b> Per-model adapters translate a shared WASD-style vocabulary into each model's own control format, so ten heterogeneous models receive <strong>semantically identical instructions</strong> across 500 standardized cases spanning styles, viewpoints, and difficulty tiers. A new model costs one adapter.</li>
+      <li><b>Action dynamics through a control-systems lens.</b> An action command is a <em>step input</em>: we measure direction accuracy, direction purity, response latency, and motion stability&mdash;each resolved separately for translation and rotation&mdash;alongside suites for world memory and visual quality.</li>
+      <li><b>Deterministic by construction.</b> Every estimator is feed-forward, so scores are bit-identical across runs: no SLAM bundle-adjustment variance, no sampled VLM judgments.</li>
+      <li><b>Differences existing protocols cannot see.</b> The fastest responders are often the least stable; per-axis resolution reveals models that follow translation almost perfectly while barely responding to rotation; and the model with the best perceptual quality ranks last in translational accuracy and latency.</li>
+    </ul>
+
+    <div class="cmp-scroll" style="margin-top: 30px;">
       <table class="cmp">
         <thead>
           <tr>
@@ -444,19 +484,20 @@
       <div class="tier med"><b>Medium &middot; 40s, two-segment</b>Adds exactly one switch, without which there is no transient; provides the first round trips.</div>
       <div class="tier hard"><b>Hard &middot; 60s, three-segment</b>Patrol routes and 360&deg; rotations run past most models' conditioning window, where revisit and global memory fail.</div>
     </div>
-    <figure>
-      <div class="figframe"><img src="static/images/trajectories_3d.png" alt="The 15 standardized action sequences" loading="lazy"></div>
-      <figcaption>The 15 standardized action sequences, from elementary translations and rotations to combined and cyclic trajectories.</figcaption>
-    </figure>
-
     <p>
       For each image, a VLM selects the five most plausible sequences from the library, identifying physical constraints&mdash;lateral obstacles in a corridor make prolonged strafing implausible&mdash;so
       models are not penalized for refusing to walk through a wall. Across 100 images this yields <strong>500 evaluation cases</strong>.
     </p>
-    <figure>
-      <div class="figframe"><img src="static/images/vlm_traj.jpg" alt="Context-aware action selection via VLM reasoning" loading="lazy"></div>
-      <figcaption>Context-aware action selection. A VLM analyzes the initial image to identify physical constraints and selects plausible action sequences from the predefined library.</figcaption>
-    </figure>
+    <div class="fig-row">
+      <figure>
+        <div class="figframe"><img src="static/images/trajectories_3d.png" alt="The 15 standardized action sequences" loading="lazy"></div>
+        <figcaption>The 15 standardized action sequences, from elementary translations and rotations to combined and cyclic trajectories.</figcaption>
+      </figure>
+      <figure>
+        <div class="figframe"><img src="static/images/vlm_traj.jpg" alt="Context-aware action selection via VLM reasoning" loading="lazy"></div>
+        <figcaption>Context-aware action selection. A VLM analyzes the initial image to identify physical constraints and selects plausible action sequences from the predefined library.</figcaption>
+      </figure>
+    </div>
   </section>
 
   <!-- ── Metrics ── -->
@@ -654,30 +695,13 @@
 
     <div class="wrap" style="padding: 0;">
       <figure>
-        <div class="figframe"><img src="static/images/capability_profiles.png" alt="Radar capability profile of each model over thirteen columns, Real vs Stylized overlaid" loading="lazy"></div>
+        <div class="figframe" style="max-width: 100%;"><img src="static/images/capability_profiles.png" alt="Radar capability profile of each model over thirteen columns, Real vs Stylized overlaid" loading="lazy"></div>
         <figcaption>Capability profile of each model over the thirteen reported columns, First-Person Real (solid) against Stylized (dashed). All axes run 0&ndash;100 in the same order in every panel; the gap between the two outlines is that model's stylization penalty. Lyra&nbsp;2.0 is the only near-convex profile&mdash;one all-round model and no second&mdash;and the stylization penalty falls hardest on the models that lead on Real.</figcaption>
       </figure>
     </div>
   </section>
 
   <!-- ── Qualitative examples ── -->
-  <section class="wrap" id="examples">
-    <p class="kicker">Qualitative Examples</p>
-    <h2>What each failure looks like</h2>
-    <p class="muted">
-      One high- and one low-scoring case per metric, holding scene, command, and sampling fixed within each pair&mdash;the only difference is the model.
-      The Action Dynamics rows carry a signal panel as well as frames, because their failures are in the <em>motion</em> rather than the pixels: six stills cannot show that a model kept turning after the command changed.
-    </p>
-    <figure>
-      <div class="figframe"><img src="static/images/metric_examples_action.jpg" alt="High- and low-scoring examples for each Action Dynamics metric with flow signal panels" loading="lazy"></div>
-      <figcaption>Action Dynamics examples. The panel at left is the signal the metric reads; shading marks what the flow on the commanded axis <em>should</em> do, and the dashed rule in Response Latency is the command switch. Green marks the high-scoring model, red the low-scoring one.</figcaption>
-    </figure>
-    <figure>
-      <div class="figframe"><img src="static/images/metric_examples_rest.jpg" alt="High- and low-scoring examples for memory and quality metrics" loading="lazy"></div>
-      <figcaption>Memory and quality examples, drawn from the span each metric actually reads: adjacent frames for Local Memory, outbound and return halves for Revisit Memory, the full trajectory otherwise. These failures are visible in the frames themselves.</figcaption>
-    </figure>
-  </section>
-
   <!-- ── Findings ── -->
   <section class="wrap" id="findings">
     <p class="kicker">Key Findings</p>
@@ -737,12 +761,10 @@
 
   <!-- ── Right side nav ── -->
   <ul class="side-nav">
-    <li><a href="#abstract">Abstract</a></li>
     <li><a href="#comparison">Why WorldMark</a></li>
     <li><a href="#suite">Benchmark Suite</a></li>
     <li><a href="#metrics">Metrics</a></li>
     <li><a href="#results">Results</a></li>
-    <li><a href="#examples">Qualitative Examples</a></li>
     <li><a href="#findings">Key Findings</a></li>
     <li><a href="#arena">Arena</a></li>
     <li><a href="#bibtex">BibTeX</a></li>
