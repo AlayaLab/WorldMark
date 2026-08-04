@@ -99,9 +99,6 @@
     figcaption { font-size: 13.5px; color: var(--ink-faint); margin-top: 10px; text-align: center; line-height: 1.55; max-width: 720px; margin-left: auto; margin-right: auto; }
     .figframe { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; background: #fff; max-width: 50%; margin: 0 auto; }
     @media (max-width: 860px) { .figframe { max-width: 100%; } }
-    details.mosaic { margin: 20px 0; border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 18px; }
-    details.mosaic summary { cursor: pointer; font-weight: 700; font-size: 15px; color: var(--accent); }
-    details.mosaic .figframe { margin-top: 14px; }
 
     /* ── Hero ────────────────────────────────── */
     .hero { text-align: center; padding: 64px 0 30px; }
@@ -138,10 +135,10 @@
     .stat span { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
 
     /* ── Comparison table ────────────────────── */
-    .cmp-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
-    table.cmp { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 720px; }
-    .cmp th, .cmp td { padding: 10px 14px; text-align: center; border-bottom: 1px solid var(--line); }
-    .cmp thead th { background: var(--bg-alt); font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
+    .cmp-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); max-width: 760px; margin-left: auto; margin-right: auto; }
+    table.cmp { border-collapse: collapse; width: 100%; font-size: 12.5px; min-width: 620px; }
+    .cmp th, .cmp td { padding: 7px 10px; text-align: center; border-bottom: 1px solid var(--line); }
+    .cmp thead th { background: var(--bg-alt); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
     .cmp td:first-child, .cmp th:first-child { text-align: left; font-weight: 600; }
     .cmp tr.ours { background: var(--accent-soft); font-weight: 700; }
     .cmp tr:last-child td { border-bottom: none; }
@@ -437,20 +434,9 @@
       and styles from oil painting and Ukiyo-e to Minecraft.
     </p>
     <figure>
-      <div class="figframe"><img src="static/images/image_suite.jpg" alt="Image Suite overview: diverse scenes and styles in first- and third-person views" loading="lazy"></div>
-      <figcaption>Overview of the Image Suite. Diverse scenes and styles, shown in first- and third-person views.</figcaption>
+      <div class="figframe" style="max-width: 100%;"><img src="static/images/image_suite_all.jpg" alt="All 100 test images: photorealistic above, stylized below, each scene as a first-/third-person pair" loading="lazy"></div>
+      <figcaption>The complete Image Suite: all 100 test images, photorealistic above and stylized below. Each adjacent pair is one scene&mdash;the first-person reference on the left, its third-person counterpart on the right: the same camera with a character composited into frame, so a pair agrees everywhere except around the added figure.</figcaption>
     </figure>
-    <figure>
-      <div class="figframe"><img src="static/images/suite_coverage.png" alt="Coverage of the retained references against the WorldScore pool in CLIP feature space" loading="lazy"></div>
-      <figcaption>Coverage in CLIP feature space: the WorldScore pool in grey (n = 1000 per domain) against the retained references in red (n = 25), under four independent t-SNE projections. The selection scatters across the occupied region in all panels&mdash;what was discarded was repetition, not coverage.</figcaption>
-    </figure>
-    <details class="mosaic">
-      <summary>Show the complete Image Suite (all 100 test images)</summary>
-      <figure style="margin-top: 0;">
-        <div class="figframe" style="max-width: 100%;"><img src="static/images/image_suite_all.jpg" alt="All 100 test images: photorealistic above, stylized below, each scene as a first-/third-person pair" loading="lazy"></div>
-        <figcaption>All 100 test images, photorealistic above and stylized below. Each adjacent pair is one scene: the first-person reference on the left, its third-person counterpart on the right&mdash;the same camera with a character composited into frame, so a pair agrees everywhere except around the added figure.</figcaption>
-      </figure>
-    </details>
 
     <h3>Action Suite &mdash; 15 trajectories, 3 functional tiers</h3>
     <div class="tiers">
@@ -512,30 +498,6 @@
       </div>
     </div>
 
-    <h3>Why Accuracy and Purity are not interchangeable</h3>
-    <p>
-      Accuracy is <em>signed</em> by the commanded direction; Purity is a ratio of channel magnitudes and carries no sign.
-      A model that yaws the wrong way still keeps its motion in the yaw channel, so it stays pure while Accuracy collapses:
-      HY-GameCraft&nbsp;1.0 reads <strong>2.7 Accuracy against 63.1 Purity</strong> on rotation.
-      Reporting both separates a model that turns the wrong way from one that turns raggedly.
-    </p>
-    <figure>
-      <div class="figframe"><img src="static/images/da_dp_schematic.png" alt="Schematic: three cameras under the same strafe-right command, showing how Accuracy and Purity fail independently" loading="lazy"></div>
-      <figcaption>All three cameras receive the same strafe-right command (grey dashed); the solid line is the path taken, from above. (b)&nbsp;moves right&mdash;Accuracy holds&mdash;but much of its motion is off-axis, which Purity penalizes. (c)&nbsp;stays entirely on the commanded axis&mdash;Purity is as high as (a)&mdash;yet runs the wrong way, and Accuracy collapses. Each metric is blind to the failure the other catches.</figcaption>
-    </figure>
-
-    <h3>Why optical flow, not pose</h3>
-    <p>
-      Response Latency times the onset of a new command and Motion Stability counts ~0.3s stalls, so both need per-frame sampling.
-      At that rate, optical flow is a <em>measured velocity</em>, while a pose stream is a reconstructed position that must be differenced&mdash;and differencing scales noise as 1/&Delta;t.
-      On 30 direction-reversing clips per domain, median per-frame velocity noise is <strong>0.08 for flow</strong> vs 0.28 for SLAM and 0.63 for a feed-forward pose estimator;
-      SLAM additionally leaves the plot entirely on roughly one clip in eight, peaking at 1119, whenever tracking is lost.
-      Flow recovers the commanded reversal on every clip in both domains.
-    </p>
-    <figure>
-      <div class="figframe"><img src="static/images/flow_vs_pose.png" alt="Per-frame velocity noise for flow, SLAM, and feed-forward pose estimation" loading="lazy"></div>
-      <figcaption>Per-frame velocity noise at 16&nbsp;fps for the three candidate signals (log axis; bars are medians, dots individual clips). Flow is both the lowest and the tightest in each domain.</figcaption>
-    </figure>
   </section>
 
   <!-- ── Results ── -->
@@ -689,21 +651,13 @@
     <tr><td class="model-col">Matrix-Game 2.0</td><td class="second">93.94</td><td>42.42</td><td class="best">76.95</td><td>37.49</td><td class="best">74.03</td><td>67.46</td><td class="second">86.73</td><td>79.90</td><td>72.97</td><td>31.28</td><td>75.26</td><td>67.29</td><td>45.98</td></tr>
     <tr><td class="model-col">SANA-WM</td><td>87.43</td><td class="best">80.84</td><td>63.92</td><td class="best">76.79</td><td>54.21</td><td class="best">89.30</td><td>79.78</td><td class="second">93.91</td><td>75.78</td><td>46.17</td><td>76.33</td><td>70.59</td><td>51.63</td></tr>
     </tbody></table></div></div>
-  </section>
 
-  <!-- ── Capability profiles ── -->
-  <section class="wrap" id="profiles">
-    <p class="kicker">Capability Profiles</p>
-    <h2>Read the shapes, not the areas</h2>
-    <p class="muted">
-      Every model over all thirteen columns, First-Person Real (solid) against Stylized (dashed).
-      There is <strong style="color: var(--ink);">one all-round model and no second</strong>: Lyra&nbsp;2.0 is the only near-convex profile, at or above the suite mean on 12 of 13 columns.
-      And the stylization penalty falls hardest on the strongest models&mdash;summed over the columns it ranges from 38.8 (DreamX-World) to 110.6 (Lyra&nbsp;2.0), precisely the models that lead on Real.
-    </p>
-    <figure>
-      <div class="figframe"><img src="static/images/capability_profiles.png" alt="Radar capability profile of each model over thirteen columns, Real vs Stylized overlaid" loading="lazy"></div>
-      <figcaption>Capability profile of each model. All axes run 0&ndash;100 in the same order in every panel; the gap between the two outlines is that model's stylization penalty, systematic only on the three memory axes.</figcaption>
-    </figure>
+    <div class="wrap" style="padding: 0;">
+      <figure>
+        <div class="figframe"><img src="static/images/capability_profiles.png" alt="Radar capability profile of each model over thirteen columns, Real vs Stylized overlaid" loading="lazy"></div>
+        <figcaption>Capability profile of each model over the thirteen reported columns, First-Person Real (solid) against Stylized (dashed). All axes run 0&ndash;100 in the same order in every panel; the gap between the two outlines is that model's stylization penalty. Lyra&nbsp;2.0 is the only near-convex profile&mdash;one all-round model and no second&mdash;and the stylization penalty falls hardest on the models that lead on Real.</figcaption>
+      </figure>
+    </div>
   </section>
 
   <!-- ── Qualitative examples ── -->
@@ -748,21 +702,6 @@
     </div>
   </section>
 
-  <!-- ── Human alignment ── -->
-  <section class="wrap" id="human">
-    <p class="kicker">Human Preference Alignment</p>
-    <h2>85.1% agreement with human judgment</h2>
-    <p class="muted">
-      Forty annotators each compared 20 blinded video pairs per metric. Averaged over ten dimensions, metric&ndash;human agreement is
-      <strong style="color: var(--ink);">85.1%</strong>, from 79.1% (rotational stability) to 93.3% (revisit memory).
-      Ties are more frequent on rotation than translation&mdash;rotational control is harder to judge by eye.
-    </p>
-    <figure>
-      <div class="figframe"><img src="static/images/human_alignment.png" alt="Metric-human agreement per motion axis for the four action metrics" loading="lazy"></div>
-      <figcaption>Metric&ndash;human agreement per motion axis. Bar height is the fraction of trials where metric and annotator preferred the same video; error bars are &plusmn;1 s.d. across 40 annotators.</figcaption>
-    </figure>
-  </section>
-
   <!-- ── Arena ── -->
   <section class="wrap">
     <div class="arena-cta" id="arena">
@@ -803,10 +742,8 @@
     <li><a href="#suite">Benchmark Suite</a></li>
     <li><a href="#metrics">Metrics</a></li>
     <li><a href="#results">Results</a></li>
-    <li><a href="#profiles">Capability Profiles</a></li>
     <li><a href="#examples">Qualitative Examples</a></li>
     <li><a href="#findings">Key Findings</a></li>
-    <li><a href="#human">Human Study</a></li>
     <li><a href="#arena">Arena</a></li>
     <li><a href="#bibtex">BibTeX</a></li>
   </ul>
