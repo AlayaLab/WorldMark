@@ -1,17 +1,49 @@
-# WorldMark dependencies.
+# WorldMark — SINGLE unified environment for all 4 eval stages
+#   python -m venv envs/worldmark && envs/worldmark/bin/pip install -r requirements.txt
+# Tested target: Python 3.10/3.11, CUDA 12.1 wheels.
 #
-# The four compute stages use DIFFERENT deep-learning backbones whose torch
-# versions conflict, so they MUST live in separate virtual environments. Install
-# each stage's env from the corresponding file below; the aggregation/plotting
-# needs only numpy + scipy + matplotlib (any of the envs, or a plain one).
-#
-#   Action Dynamics (M1-M4)  ->  requirements/flow.txt         (SEA-RAFT + Depth-Anything-3)
-#   Visual Quality           ->  requirements/qalign.txt       (Q-Align / OneAlign, mPLUG-Owl2)
-#   World Memory Local/Revisit (C1/C2) -> requirements/consistency.txt (DINOv2 + LPIPS + TransNetV2)
-#   World Memory Global (C3) ->  requirements/c3.txt           (VGGT-Omega)
-#
-# Common (aggregation + table rendering):
-numpy>=1.24
-scipy>=1.10
-matplotlib>=3.7
+# Why one env works: 3 of the 4 stages (flow, consistency, c3) already coexist on any
+# modern torch. The ONLY thing that forces old pins is Q-Align's mPLUG-Owl2, which breaks
+# on transformers>=4.37. Pinning transformers==4.36.1 satisfies Q-Align AND still provides
+# facebook/dinov2-base (added in transformers 4.35). torch 2.4.1 meets VGGT-Omega's >=2.4
+# floor while remaining fine for Q-Align, SEA-RAFT, DINOv2, LPIPS, TransNetV2.
+
+--extra-index-url https://download.pytorch.org/whl/cu121
+torch==2.4.1
+torchvision==0.19.1
+
+# ---- shared I/O ----
+numpy==1.26.4
+opencv-python
 decord>=0.6.0
+pillow
+
+# ---- Visual Quality: Q-Align / OneAlign (mPLUG-Owl2) — the binding constraint ----
+transformers==4.36.1          # mPLUG-Owl2 breaks on >=4.37; also serves dinov2-base
+accelerate==0.26.1
+sentencepiece
+einops
+icecream
+
+# ---- World Memory Local (C1) + Revisit (C2): DINOv2 + LPIPS + TransNetV2 ----
+lpips
+transnetv2-pytorch
+
+# ---- external source-installs (clone + `pip install -e . --no-deps` per their README; do
+#      NOT let them re-pin torch/transformers) — verified: these are NOT clean PyPI packages ----
+#   SEA-RAFT          https://github.com/princeton-vl/SEA-RAFT          (M1-M4 optical flow; set SEARAFT_CFG)
+#   Depth-Anything-3  https://github.com/DepthAnything/Depth-Anything-3 (M1-M4 depth; `pip install -e . --no-deps`; set DA3_MODEL)
+#   VGGT-Omega        https://github.com/facebookresearch/vggt-omega   (C3; needs torch>=2.4 -> pinned above)
+#
+# ---- NGC / container gotcha (verified) ----
+# If pip aborts with ResolutionImpossible pinning torch to an *a0+nv* build, a global
+# /etc/pip/constraint.txt (set via $PIP_CONSTRAINT) is forcing the container's torch.
+# Clear it for this venv:  export PIP_CONSTRAINT=
+# ---- known frictions (why the repo historically used 4 venvs) ----
+# 1. Q-Align (mPLUG-Owl2) is the ONLY hard blocker: it caps transformers at 4.36.x. If a
+#    future component needs transformers>=4.40, either keep Q-Align in its own venv, or apply
+#    the community mPLUG-Owl2 patch for new transformers (removes _expand_mask / updates attn).
+# 2. flash-attn is OPTIONAL for Q-Align — if the prebuilt wheel doesn't match torch/CUDA,
+#    run with attn_implementation="eager" instead of installing flash-attn.
+# 3. VGGT-Omega and Depth-Anything-3 pull their own deps from source; install them LAST and
+#    with `--no-deps` if they try to upgrade torch/transformers past the pins above.

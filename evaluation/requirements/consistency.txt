@@ -1,9 +1,0 @@
-# World Memory Local (C1) + Revisit (C2): DINOv2 patch-mean + LPIPS + TransNetV2.
-torch>=2.1
-transformers>=4.37          # facebook/dinov2-base
-lpips
-transnetv2-pytorch
-numpy>=1.24
-opencv-python
-decord>=0.6.0
-pillow

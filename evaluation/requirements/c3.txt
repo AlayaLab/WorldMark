@@ -1,8 +1,0 @@
-# World Memory Global (C3): VGGT-Omega feed-forward joint reconstruction (deterministic).
-#   Repo: https://github.com/facebookresearch/vggt-omega   (set VGGT_OMEGA_PATH to the clone)
-torch>=2.4
-numpy>=1.24
-opencv-python
-decord>=0.6.0
-pillow
-# plus VGGT-Omega's own requirements (see its repo)

@@ -118,7 +118,7 @@ Writes `final_master.csv` plus a colour-coded summary table. All nine metrics ar
 feed-forward, so scores are **bit-identical across runs** — no SLAM randomness, no sampled
 VLM judgments.
 
-Setup (four mutually incompatible torch stacks, one venv each), single-stage runs, and cost
+Setup (one virtualenv), single-stage runs, and cost
 figures: **[`evaluation/README.md`](evaluation/README.md)**.
 
 ---

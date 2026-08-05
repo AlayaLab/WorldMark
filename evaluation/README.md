@@ -30,15 +30,18 @@ python ../generation/check_delivery.py \
 
 ## Install
 
-The four compute stages use **mutually incompatible torch stacks**, so create one virtualenv
-per stage:
+All four stages share **one** environment:
 
 ```bash
-python -m venv envs/flow        && envs/flow/bin/pip        install -r requirements/flow.txt
-python -m venv envs/qalign      && envs/qalign/bin/pip      install -r requirements/qalign.txt
-python -m venv envs/consistency && envs/consistency/bin/pip install -r requirements/consistency.txt
-python -m venv envs/c3          && envs/c3/bin/pip          install -r requirements/c3.txt
+python -m venv envs/worldmark
+envs/worldmark/bin/pip install -r requirements.txt
 ```
+
+Tested on Python 3.10/3.11 with CUDA 12.1 wheels. The binding pin is
+`transformers==4.36.1` — Q-Align's mPLUG-Owl2 breaks above it, and that version still serves
+`facebook/dinov2-base`. `torch==2.4.1` clears VGGT-Omega's `>=2.4` floor while remaining fine
+for Q-Align, SEA-RAFT, DINOv2, LPIPS and TransNetV2. See the comments in
+[`requirements.txt`](requirements.txt) for the install-order gotchas.
 
 External repos to clone and point at via env vars (see `worldmark/wm_config.py`):
 
@@ -69,17 +72,18 @@ Action ids and their key sequences are defined in `worldmark/protocol.py` and
 ## Run
 
 ```bash
+source envs/worldmark/bin/activate
 export WORLDMARK_VIDEOS=/path/to/real/first     # the dir containing <MODEL>/*.mp4
 export WORLDMARK_RESULTS=/path/to/out
 export EVAL_SUFFIX=_real_first                  # keeps domains/views separate
-export PY_FLOW=envs/flow/bin/python
-export PY_QA=envs/qalign/bin/python
-export PY_C3=envs/c3/bin/python
-export PY_CONSISTENCY=envs/consistency/bin/python
 # export NGPU=2                                 # optional, default 1
 
 bash run_eval.sh
 ```
+
+`run_eval.sh` calls plain `python`, so activating the env is all it needs. If you ever do have
+to split a stage out (e.g. a future component needs `transformers>=4.40` and you keep Q-Align
+separate), point `PY_FLOW` / `PY_QA` / `PY_C3` / `PY_CONSISTENCY` at the other interpreter.
 
 Every stage is idempotent and resumable, so an interrupted run picks up where it stopped.
 Outputs:
@@ -93,7 +97,7 @@ reporting normalization without recomputing.
 ### A single stage
 
 ```bash
-PYTHONPATH=worldmark CUDA_VISIBLE_DEVICES=0 $PY_FLOW worldmark/flow_batch_full.py
+PYTHONPATH=worldmark CUDA_VISIBLE_DEVICES=0 python worldmark/flow_batch_full.py
 # multi-GPU: one process per shard, e.g. SHARD=0 NSHARD=2 / SHARD=1 NSHARD=2
 ```
 

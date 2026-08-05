@@ -10,15 +10,15 @@
 #   C2    -> World Memory: Revisit (equal-motion pairing; needs FLOW cache)
 #   AGG   -> aggregate into master CSV + colored PNG
 #
-# The four compute stages use different, mutually-incompatible deep-learning
-# environments (torch versions differ), so each stage is launched with its own
-# Python interpreter, configured via the PY_* environment variables below.
+# All stages run in one environment (see requirements.txt) — just activate it.
+# The PY_* variables below stay as an escape hatch if you ever need to run a
+# stage under a different interpreter.
 #
 # Configuration (export before running, or edit here):
 #   WORLDMARK_VIDEOS   video root, layout {root}/{model}/{stem}.mp4   (required)
 #   WORLDMARK_RESULTS  output root                                    (default ./results)
 #   EVAL_SUFFIX         tag appended to result dirs (e.g. _real_first) (default empty)
-#   PY_FLOW PY_QA PY_C3 PY_CONSISTENCY   per-stage python interpreters (default: python)
+#   PY_FLOW PY_QA PY_C3 PY_CONSISTENCY   optional per-stage interpreters (default: python)
 #   NGPU                number of GPUs to shard across                 (default 1)
 # =============================================================================
 set -u
@@ -26,10 +26,10 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 PKG="$HERE/worldmark"
 export PYTHONPATH="$PKG:${PYTHONPATH:-}"
 
-PY_FLOW="${PY_FLOW:-python}"                 # env with SEA-RAFT + Depth-Anything-3
-PY_QA="${PY_QA:-python}"                     # env with Q-Align / OneAlign
-PY_C3="${PY_C3:-python}"                     # env with VGGT-Omega
-PY_CONSISTENCY="${PY_CONSISTENCY:-python}"   # env with DINOv2 + LPIPS + TransNetV2
+PY_FLOW="${PY_FLOW:-python}"                 # override only to split a stage out
+PY_QA="${PY_QA:-python}"
+PY_C3="${PY_C3:-python}"
+PY_CONSISTENCY="${PY_CONSISTENCY:-python}"
 NGPU="${NGPU:-1}"
 LOG="$HERE/logs"; mkdir -p "$LOG"
 
