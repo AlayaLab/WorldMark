@@ -13,6 +13,11 @@ trajectories — from **one shared `W S A D L R` action vocabulary** over **500 
 cases**, and scores the result with **9 deterministic metrics** spanning action dynamics, world
 memory, and visual quality.
 
+> **Scope.** WorldMark evaluates **action-conditioned interactive world models** — models that
+> take a per-step control input (keys, pose, camera trajectory, or action-annotated caption).
+> Plain text-to-video (T2V) and image-to-video (I2V) models that do not accept an action signal
+> are **out of scope**: without a controllable command there is no action to measure.
+
 <img src="docs/static/images/teaser.jpg" width="50%" alt="WorldMark overview: per-model adapters translate one shared action vocabulary into each model's native control format; a round-trip probe compares outbound and return views at equal accumulated motion.">
 
 Using WorldMark is two steps.
@@ -35,7 +40,9 @@ Inputs live in **[`arena_inputs/`](arena_inputs/)** (read-only): 25 starting ima
 One `(view, domain)` pair = 25 images × 5 actions = **125 videos**; all four = **500**.
 
 Your model must receive the same commands as everyone else's, expressed in *its* native
-control format. That translation layer is the adapter, and you write one per model.
+control format. That translation layer is the adapter, and you write one per model. This
+assumes your model **accepts an action input** — WorldMark does not apply to pure T2V / I2V
+models (see [Scope](#worldmark) above).
 
 ### With an agent (recommended)
 
