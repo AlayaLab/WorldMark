@@ -29,7 +29,7 @@ actually been made — worth a skim before you conclude anything about a repo.
 
 The skill in `../.claude/skills/world-model-adapter/` does the adapter and the batch render.
 It needs the **model repo** and **which view + domain**; see the repo
-[README](../README.md#-generate-videos).
+[README](../README.md#1%EF%B8%8F%E2%83%A3-generate-videos).
 
 ## `check_delivery.py`
 

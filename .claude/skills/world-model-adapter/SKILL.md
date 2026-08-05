@@ -64,9 +64,10 @@ Converse in the user's language. Artifacts follow fixed rules regardless:
 
 ### 1. Read the inputs first
 
-`arena_inputs/action_protocol.txt` is authoritative for the action semantics. For the file
-layout, **list the directories yourself** — `README.txt` has been stale before (it still
-understates which prompt files ship).
+`arena_inputs/action_protocol.txt` is authoritative for the action semantics and
+`arena_inputs/README.txt` describes the layout. Still **list the directories yourself** to
+confirm — the inputs can be revised, and a doc that has drifted is invisible until it costs you
+a full run.
 
 **[references/output_spec.md](references/output_spec.md) §1** records the layout and the
 verified facts about the data — including three things that catch people out:

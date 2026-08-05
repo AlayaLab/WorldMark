@@ -23,9 +23,8 @@ arena_inputs/
     style/ style_intrinsics/ style_action.txt  prompt_style.txt
 ```
 
-> `README.txt` in the zip is **stale** on one point: it says only `third_view` ships
-> `prompt_*.txt`. All four `{view}/prompt_{domain}.txt` now exist, 25 rows each. Trust the
-> filesystem over the README (trap 12), and re-check both when the zip is updated.
+> `README.txt` matches this layout as shipped. Still trust the filesystem over any doc
+> (trap 12), and re-check both if the inputs are revised.
 
 Dimensions: **view** ∈ {`first_view`, `third_view`} × **domain** ∈ {`real`, `style`}.
 Per (model × view × domain): 25 images × 5 actions = **125 videos**.

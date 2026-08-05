@@ -164,9 +164,6 @@ Failure modes seen or easily reachable:
 Use `{view}/prompt_{domain}.txt` row `i` for image `i`, verbatim, and record
 `prompt.source` as `file:row` in the manifest so it is auditable.
 
-Note the zip's own `README.txt` is stale here (it claims only `third_view` has prompts) — see
-trap 12.
-
 ## 15. Inputs are not uniform in size or aspect ratio → E5, H3
 
 Measured: `real` images span 1024×768 … 1920×1200 (AR 1.33–1.79); `style` is uniformly

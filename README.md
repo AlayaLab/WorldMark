@@ -18,17 +18,17 @@ memory, and visual quality.
 Using WorldMark is two steps.
 
 ```
-arena_inputs/  ──①generate──▶  {domain}/{view}/{MODEL}/*.mp4  ──②evaluate──▶  scores
+arena_inputs/  ──1️⃣ generate──▶  {domain}/{view}/{MODEL}/*.mp4  ──2️⃣ evaluate──▶  scores
 ```
 
 | | | |
 |---|---|---|
-| **①** | **[Generate videos](#-generate-videos)** | drive your model with our images + action sequences |
-| **②** | **[Evaluate](#-evaluate)** | score the videos on the 9 metrics |
+| 1️⃣ | **[Generate videos](#1️⃣-generate-videos)** | drive your model with our images + action sequences |
+| 2️⃣ | **[Evaluate](#2️⃣-evaluate)** | score the videos on the 9 metrics |
 
 ---
 
-## ① Generate videos
+## 1️⃣ Generate videos
 
 Inputs live in **[`arena_inputs/`](arena_inputs/)** (read-only): 25 starting images per
 `view × domain`, the action assignment for each image, per-image intrinsics, and captions.
@@ -80,7 +80,7 @@ will produce meaningless numbers.
 
 ---
 
-## ② Evaluate
+## 2️⃣ Evaluate
 
 ```bash
 cd evaluation
@@ -117,6 +117,8 @@ figures: **[`evaluation/README.md`](evaluation/README.md)**.
   year={2026}
 }
 ```
+
+Questions, or a model you would like added: **xjxu21@gmail.com**
 
 ## License
 
