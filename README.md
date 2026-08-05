@@ -118,7 +118,10 @@ figures: **[`evaluation/README.md`](evaluation/README.md)**.
 }
 ```
 
-Questions, or a model you would like added: **xjxu21@gmail.com**
+## Contact
+
+Please check the documents and the original paper for common questions. For other questions,
+please raise an issue or contact `xjxu21` at `gmail` dot `com`.
 
 ## License
 
