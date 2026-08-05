@@ -1,0 +1,21 @@
+WorldMark action protocol  —  action_id -> key sequence
+Keys:  W=forward  S=back  A=strafe-left  D=strafe-right  L=turn-left  R=turn-right
+ 1: W      (forward)
+ 2: S      (back)
+ 3: A      (strafe left)
+ 4: D      (strafe right)
+ 5: R      (turn right)
+ 6: WS     (forward -> back)
+ 7: LR     (turn-left -> turn-right)
+ 8: AD     (strafe-left -> strafe-right)
+ 9: WR     (forward -> turn-right)
+10: SL     (back -> turn-left)
+11: WSW    (forward -> back -> forward)
+12: LRL    (turn-left -> turn-right -> turn-left)
+13: WRW    (forward -> turn-right -> forward)
+14: ADA    (strafe-left -> strafe-right -> strafe-left)
+15: WRS    (forward -> turn-right -> back)
+
+Each key-segment is held ~20 s (16 fps). *_action.txt: row i (image 000..024) lists that
+image's 5 assigned action_ids -> 25 images x 5 actions = 125 videos per domain.
+Generated video name = {image}_{action:03d}.mp4  (e.g. 016_014.mp4 = image 016, action 14 = ADA).

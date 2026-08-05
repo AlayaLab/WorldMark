@@ -12,7 +12,8 @@ figs/
 make_video.py
 make_ppt.py
 make_animated_ppt.py
-.claude/
+.claude/*
+!.claude/skills/
 worldmark_alaya/
 worldmark_alaya.zip
 
@@ -24,3 +25,6 @@ worldmark_alaya.zip
 *.npz
 worldmark_code/
 worldmark_code.zip
+worldmark_agent_skill/
+worldmark_agent_skill.zip
+arena_inputs.zip
