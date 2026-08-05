@@ -455,7 +455,7 @@
       <button class="ex-tab" data-group="action" data-ex="3">Motion Stability</button>
       <button class="ex-tab" data-group="action" data-ex="4">Response Latency</button>
     </div>
-    <div class="ex-panel active" data-group="action" data-ex="1" data-switches="20">
+    <div class="ex-panel active" data-group="action" data-ex="1" data-segments="2">
       <p class="ex-cmd"><b>Command</b> Forth &amp; Back &nbsp;<code>W&rarr;S</code>&nbsp; 40s
         &nbsp;&middot;&nbsp; <b>Look for</b> whether the camera actually reverses when the command flips, or keeps advancing through both halves.</p>
       <div class="ex-pair">
@@ -468,7 +468,7 @@
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
       </div>
     </div>
-    <div class="ex-panel" data-group="action" data-ex="2" data-switches="20">
+    <div class="ex-panel" data-group="action" data-ex="2" data-segments="2">
       <p class="ex-cmd"><b>Command</b> Pan L &amp; R &nbsp;<code>L&rarr;R</code>&nbsp; 40s
         &nbsp;&middot;&nbsp; <b>Look for</b> whether the motion stays on the yaw axis, or leaks into strafing and forward drift.</p>
       <div class="ex-pair">
@@ -481,7 +481,7 @@
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
       </div>
     </div>
-    <div class="ex-panel" data-group="action" data-ex="3" data-switches="">
+    <div class="ex-panel" data-group="action" data-ex="3" data-segments="1">
       <p class="ex-cmd"><b>Command</b> Strafe Right &nbsp;<code>D</code>&nbsp; 20s
         &nbsp;&middot;&nbsp; <b>Look for</b> whether motion holds steady, or stutters, stalls, and decays to a standstill while the command still runs.</p>
       <div class="ex-pair">
@@ -494,7 +494,7 @@
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
       </div>
     </div>
-    <div class="ex-panel" data-group="action" data-ex="4" data-switches="20">
+    <div class="ex-panel" data-group="action" data-ex="4" data-segments="2">
       <p class="ex-cmd"><b>Command</b> Forth &amp; Back &nbsp;<code>W&rarr;S</code>&nbsp; 40s
         &nbsp;&middot;&nbsp; <b>Look for</b> how soon the new command takes effect at the 20s switch&mdash;a step, or a ramp that arrives seconds late.</p>
       <div class="ex-pair">
@@ -514,7 +514,7 @@
       <button class="ex-tab" data-group="memory" data-ex="6">Revisit</button>
       <button class="ex-tab" data-group="memory" data-ex="7">Global</button>
     </div>
-    <div class="ex-panel active" data-group="memory" data-ex="5" data-switches="">
+    <div class="ex-panel active" data-group="memory" data-ex="5" data-segments="1">
       <p class="ex-cmd"><b>Command</b> Forward &nbsp;<code>W</code>&nbsp; 20s
         &nbsp;&middot;&nbsp; <b>Look for</b> flicker, mutation, or an outright cut between adjacent moments.</p>
       <div class="ex-pair">
@@ -527,7 +527,7 @@
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
       </div>
     </div>
-    <div class="ex-panel" data-group="memory" data-ex="6" data-switches="20">
+    <div class="ex-panel" data-group="memory" data-ex="6" data-segments="2">
       <p class="ex-cmd"><b>Command</b> Pan L &amp; R &nbsp;<code>L&rarr;R</code>&nbsp; 40s
         &nbsp;&middot;&nbsp; <b>Look for</b> whether turning back returns you to the view you left, or to somewhere else entirely.</p>
       <div class="ex-pair">
@@ -540,7 +540,7 @@
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
       </div>
     </div>
-    <div class="ex-panel" data-group="memory" data-ex="7" data-switches="20">
+    <div class="ex-panel" data-group="memory" data-ex="7" data-segments="2">
       <p class="ex-cmd"><b>Command</b> Pan L &amp; R &nbsp;<code>L&rarr;R</code>&nbsp; 40s
         &nbsp;&middot;&nbsp; <b>Look for</b> whether the scene layout survives the full sweep, or its structures rearrange as the camera passes&mdash;invisible in any single pair of frames.</p>
       <div class="ex-pair">
@@ -559,7 +559,7 @@
       <button class="ex-tab active" data-group="visual" data-ex="8">Perceptual</button>
       <button class="ex-tab" data-group="visual" data-ex="9">Aesthetic</button>
     </div>
-    <div class="ex-panel active" data-group="visual" data-ex="8" data-switches="20,40">
+    <div class="ex-panel active" data-group="visual" data-ex="8" data-segments="3">
       <p class="ex-cmd"><b>Command</b> Zigzag &nbsp;<code>A&rarr;D&rarr;A</code>&nbsp; 60s
         &nbsp;&middot;&nbsp; <b>Look for</b> per-frame fidelity: sharpness and detail against haze, clutter, and low-level distortion.</p>
       <div class="ex-pair">
@@ -572,7 +572,7 @@
         <div class="ex-track"><input class="ex-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek"><div class="ex-marks"></div></div>
       </div>
     </div>
-    <div class="ex-panel" data-group="visual" data-ex="9" data-switches="20">
+    <div class="ex-panel" data-group="visual" data-ex="9" data-segments="2">
       <p class="ex-cmd"><b>Command</b> Reverse + Pan &nbsp;<code>S&rarr;L</code>&nbsp; 40s
         &nbsp;&middot;&nbsp; <b>Look for</b> aesthetic appeal: composition, colour, and lighting rather than pixel-level fidelity.</p>
       <div class="ex-pair">
@@ -933,62 +933,64 @@
         var btn = panel.querySelector('.ex-play');
         var seek = panel.querySelector('.ex-seek');
         var marks = panel.querySelector('.ex-marks');
-        var span = 0;          // longest clip in the pair
+        var segs = parseInt(panel.dataset.segments || '1', 10);
+        var span = 0;          // wall-clock reference = longest clip
+        var ready = false;
         var scrubbing = false;
         var wasPlaying = false;
 
-        function refreshSpan() {
-          span = vids.reduce(function (a, v) {
-            return isFinite(v.duration) ? Math.max(a, v.duration) : a;
-          }, 0);
-          if (!span) return;
-          // command-switch ticks
+        // The two clips of a pair run the same commanded sequence but differ in
+        // length by a second or two, so a shared *absolute* timeline would put
+        // their command switches at different points. We work in normalized
+        // time (fraction of each clip's own duration) instead, and slow the
+        // shorter clip so the pair stays aligned while playing.
+        function sync() {
+          if (!vids.every(function (v) { return isFinite(v.duration) && v.duration > 0; })) return;
+          span = vids.reduce(function (a, v) { return Math.max(a, v.duration); }, 0);
+          vids.forEach(function (v) { v.playbackRate = v.duration / span; });
           if (marks && !marks.childElementCount) {
-            (panel.dataset.switches || '').split(',').filter(Boolean).forEach(function (t) {
+            for (var k = 1; k < segs; k++) {
               var i = document.createElement('i');
-              i.style.left = (parseFloat(t) / span * 100) + '%';
-              i.title = t + 's — command switch';
+              i.style.left = (k / segs * 100) + '%';
+              i.title = 'command switch';
               marks.appendChild(i);
-            });
+            }
           }
-          paint(vids[0].currentTime);
+          ready = true;
+          paint(frac());
         }
 
-        function paint(t) {
-          if (!span) return;
-          if (!scrubbing) seek.value = Math.round(t / span * 1000);
-          var pct = (t / span) * 100;
+        function frac() {
+          var v = vids[0];
+          return isFinite(v.duration) && v.duration ? v.currentTime / v.duration : 0;
+        }
+
+        function paint(f) {
+          if (!scrubbing) seek.value = Math.round(f * 1000);
+          var pct = f * 100;
           seek.style.background =
             'linear-gradient(90deg, var(--accent) ' + pct + '%, var(--line) ' + pct + '%)';
         }
 
-        function seekTo(t) {
+        function seekTo(f) {
+          f = Math.max(0, Math.min(1, f));
           vids.forEach(function (v) {
-            if (isFinite(v.duration)) v.currentTime = Math.min(t, v.duration - 0.05);
+            if (isFinite(v.duration)) v.currentTime = Math.min(f * v.duration, v.duration - 0.03);
           });
-          paint(t);
+          paint(f);
         }
 
         vids.forEach(function (v) {
-          v.addEventListener('loadedmetadata', refreshSpan);
-          // Restart the pair together: native `loop` would let clips of
-          // slightly different length drift out of step.
+          v.addEventListener('loadedmetadata', sync);
+          // Restart the pair together: with `loop`, clips of different length
+          // would fall out of step after the first cycle.
           v.addEventListener('ended', function () {
             if (v !== vids[0]) return;
             seekTo(0);
             if (!btn.classList.contains('paused')) play();
           });
         });
-        vids[0].addEventListener('timeupdate', function () {
-          paint(vids[0].currentTime);
-          // hold the shorter clip on its last frame instead of freezing early
-          vids.slice(1).forEach(function (v) {
-            if (isFinite(v.duration) && vids[0].currentTime > v.duration - 0.1) v.pause();
-            else if (!vids[0].paused && v.paused && !btn.classList.contains('paused')) {
-              v.play().catch(function () {});
-            }
-          });
-        });
+        vids[0].addEventListener('timeupdate', function () { paint(frac()); });
 
         function play() {
           vids.forEach(function (v) { v.play().catch(function () {}); });
@@ -1016,7 +1018,7 @@
           vids.forEach(function (v) { v.pause(); });
         });
         seek.addEventListener('input', function () {
-          if (span) seekTo(seek.value / 1000 * span);
+          if (ready) seekTo(seek.value / 1000);
         });
         function endScrub() {
           if (!scrubbing) return;
@@ -1029,7 +1031,7 @@
         panel._wm = { play: play, pause: pause, paused: function () {
           return btn.classList.contains('paused');
         } };
-        refreshSpan();
+        sync();
       }
 
       var panels = Array.prototype.slice.call(document.querySelectorAll('.ex-panel'));
