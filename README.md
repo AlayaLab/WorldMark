@@ -56,14 +56,33 @@ done.
 ### By hand
 
 Write the adapter yourself against the contract in
-**[`.claude/skills/world-model-adapter/references/output_spec.md`](.claude/skills/world-model-adapter/references/output_spec.md)**, then produce:
+**[`.claude/skills/world-model-adapter/references/output_spec.md`](.claude/skills/world-model-adapter/references/output_spec.md)**, then produce one mp4 per `(image × action)`:
 
 ```
-{domain}/{view}/{MODEL}/{image:03d}_{action:03d}.mp4     e.g. real/first/MYMODEL/016_014.mp4
+{domain}/{view}/{MODEL}/{image:03d}_{action:03d}.mp4
 ```
+
+Both numbers are zero-padded to three digits. `view` is shortened to `first` / `third` in
+output paths; `MODEL` is your upper-case tag and must stay stable across runs.
+
+**Length follows the action.** Each key in the sequence is held **20 s**, so the action id
+determines the duration — you do not choose it. Real examples, all three from image `000` of
+`first_view / real`:
+
+| Action | Keys | Segments | Duration | File to produce |
+|---|---|---|---|---|
+| `1` | `W` — forward | 1 | **20 s** | `real/first/MYMODEL/000_001.mp4` |
+| `6` | `W`→`S` — forward, then back | 2 | **40 s** | `real/first/MYMODEL/000_006.mp4` |
+| `11` | `W`→`S`→`W` — forward, back, forward | 3 | **60 s** | `real/first/MYMODEL/000_011.mp4` |
+
+So `016_014.mp4` is image `016` running action `14` = `ADA` (strafe-left → strafe-right →
+strafe-left), 3 segments, 60 s. The full id → keys table is in
+[`arena_inputs/action_protocol.txt`](arena_inputs/action_protocol.txt); which 5 actions each
+image gets is in `arena_inputs/{view}/{domain}_action.txt`. Across a split that works out to
+57 × 20 s, 45 × 40 s and 23 × 60 s = 125 videos.
 
 Keep your model's **native resolution and fps** — evaluation resizes and time-normalises, so
-there is nothing to match.
+there is nothing to match. Durations are checked against `20 s × segments` within ±10 %.
 
 ### Either way: pass the gate before evaluating
 
