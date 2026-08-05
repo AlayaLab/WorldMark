@@ -30,7 +30,7 @@ arena_inputs/  ──1️⃣ generate──▶  {domain}/{view}/{MODEL}/*.mp4  �
 
 ## 1️⃣ Generate videos
 
-Inputs live in **[`arena_inputs/`](arena_inputs/)** (read-only): 25 starting images per
+Inputs live in **[`arena_inputs/`](arena_inputs/)**: 25 starting images per
 `view × domain`, the action assignment for each image, per-image intrinsics, and captions.
 One `(view, domain)` pair = 25 images × 5 actions = **125 videos**; all four = **500**.
 
